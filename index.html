@@ -1,146 +1,45 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thông Báo Nội Bộ</title>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --primary: #1a1a2e; --accent: #e94560; --surface: #ffffff; --surface2: #f8f7f4;
-    --border: #e8e6e0; --text: #1a1a2e; --text-muted: #888880; --radius: 12px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--surface2); color: var(--text); }
+// 1. Khai báo biến lưu trữ file (đặt ở đầu thẻ <script>)
+let currentFile = { Name: "", ContentBytes: "", type: "", fullData: "" };
 
-  .site-header {
-    background: var(--primary); color: #fff; padding: 0 2rem; height: 64px;
-    display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100;
-  }
-  .header-nav { display: flex; gap: 8px; }
-  .nav-tab { padding: 6px 16px; border-radius: 20px; border: none; cursor: pointer; background: transparent; color: rgba(255,255,255,0.6); font-weight: 500; }
-  .nav-tab.active { background: rgba(255,255,255,0.12); color: #fff; }
-  .nav-tab.accent-tab { background: var(--accent); color: #fff; }
-
-  .page { display: none; padding: 2rem; max-width: 800px; margin: 0 auto; }
-  .page.active { display: block; }
-
-  .panel { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; box-shadow: 0 4px 24px rgba(0,0,0,0.05); }
-  input, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; font-family: inherit; }
-  
-  .attach-zone { border: 2px dashed var(--border); padding: 20px; text-align: center; border-radius: 8px; margin-bottom: 16px; }
-  .send-btn { width: 100%; padding: 14px; background: var(--primary); color: #fff; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; }
-  .send-btn:disabled { opacity: 0.5; }
-
-  .notice-card { background: #fff; border: 1px solid var(--border); padding: 1.5rem; border-radius: var(--radius); margin-bottom: 16px; }
-  .notice-title { font-weight: 700; font-size: 18px; margin-bottom: 10px; }
-</style>
-</head>
-<body>
-
-<header class="site-header">
-  <div style="font-family: 'Playfair Display', serif; font-size: 20px;">📢 Thông Báo</div>
-  <div class="header-nav">
-    <button class="nav-tab active" id="tab-public" onclick="showPage('public')">Bảng tin</button>
-    <button class="nav-tab accent-tab" id="tab-login" onclick="showPage('login')">🔐 Admin</button>
-  </div>
-</header>
-
-<!-- PUBLIC -->
-<div class="page active" id="page-public">
-  <div id="noticeGrid"></div>
-</div>
-
-<!-- LOGIN -->
-<div class="page" id="page-login">
-  <div class="panel" style="max-width: 400px; margin: 50px auto;">
-    <h2 style="margin-bottom:20px">Admin Login</h2>
-    <input type="text" id="loginUser" placeholder="User">
-    <input type="password" id="loginPass" placeholder="Pass">
-    <button class="send-btn" onclick="doLogin()">Đăng nhập</button>
-  </div>
-</div>
-
-<!-- ADMIN -->
-<div class="page" id="page-admin">
-  <div class="panel">
-    <h2 style="margin-bottom:20px">Đăng thông báo mới</h2>
-    <input type="text" id="noticeTitle" placeholder="Tiêu đề">
-    <textarea id="noticeContent" placeholder="Nội dung..."></textarea>
-    
-    <div class="attach-zone">
-      <input type="file" id="noticeFile" style="display:none" onchange="handleFile(this)">
-      <button type="button" onclick="document.getElementById('noticeFile').click()">📎 Chọn File đính kèm</button>
-      <p id="fileName" style="font-size:12px; margin-top:10px; color:#666">Chưa có file</p>
-    </div>
-
-    <button class="send-btn" id="sendBtn" onclick="publishNotice()">Đăng bài & Gửi Email</button>
-    <p id="status" style="text-align:center; margin-top:10px; display:none"></p>
-  </div>
-</div>
-
-<script>
-const ADMIN_USER = 'admin';
-const ADMIN_PASS = 'admin123';
-const WEBHOOK_URL = 'DÁN_URL_CỦA_BẠN_VÀO_ĐÂY'; 
-
-let state = { notices: [] };
-let currentFile = { Name: "", ContentBytes: "", type: "" };
-
-function init() {
-    const saved = localStorage.getItem('intranet_v3');
-    if (saved) state = JSON.parse(saved);
-    renderPublic();
-}
-
-function showPage(p) {
-    document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('page-' + p).classList.add('active');
-    if(document.getElementById('tab-' + p)) document.getElementById('tab-' + p).classList.add('active');
-}
-
+// 2. Hàm xử lý khi chọn file (Cập nhật lại hàm này)
 function handleFile(input) {
     const file = input.files[0];
     if (file) {
-        document.getElementById('fileName').textContent = "Sẵn sàng: " + file.name;
+        document.getElementById('fileNameDisplay').textContent = "📂 File sẵn sàng: " + file.name;
         const reader = new FileReader();
         reader.onload = function(e) {
+            // Tách Base64 để gửi qua Email và giữ bản full để hiển thị Web
             currentFile = {
                 Name: file.name,
                 ContentBytes: e.target.result.split(',')[1],
                 type: file.type,
-                fullData: e.target.result // Dùng để hiển thị lên web
+                fullData: e.target.result 
             };
+            
+            if (file.type.startsWith('image/')) {
+                const preview = document.getElementById('previewImg');
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
         };
         reader.readAsDataURL(file);
     }
 }
 
-function doLogin() {
-    if (document.getElementById('loginUser').value === ADMIN_USER && document.getElementById('loginPass').value === ADMIN_PASS) {
-        const btn = document.getElementById('tab-login');
-        btn.textContent = "⚙️ Quản lý";
-        btn.onclick = () => showPage('admin');
-        showPage('admin');
-    } else {
-        alert("Sai tài khoản!");
-    }
-}
-
+// 3. Hàm gửi bài (Cập nhật phần payload bên trong hàm publishNotice)
 async function publishNotice() {
     const title = document.getElementById('noticeTitle').value.trim();
     const content = document.getElementById('noticeContent').value.trim();
+    const status = document.getElementById('sendStatus');
     const btn = document.getElementById('sendBtn');
-    const status = document.getElementById('status');
 
-    if (!title || !content) return alert("Vui lòng nhập đủ tin!");
+    if (!title || !content) return alert("Vui lòng điền đủ thông tin");
 
     btn.disabled = true;
     status.style.display = 'block';
-    status.textContent = "⌛ Đang xử lý...";
+    status.textContent = "⏳ Đang gửi...";
 
-    // PAYLOAD CHUẨN CHO POWER AUTOMATE
+    // ĐÂY LÀ PHẦN QUAN TRỌNG NHẤT: Khớp với Schema và Outlook
     const payload = {
         title: title,
         content: content,
@@ -153,20 +52,17 @@ async function publishNotice() {
 
     try {
         if (WEBHOOK_URL) {
-            const response = await fetch(WEBHOOK_URL, {
+            await fetch(WEBHOOK_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            if (!response.ok) throw new Error("Lỗi mạng");
         }
 
-        // Lưu local để hiển thị bảng tin
+        // Phần lưu LocalStorage để hiển thị lên bảng tin (giữ logic cũ của bạn)
         state.notices.push({
-            title: payload.title,
-            content: payload.content,
-            date: payload.date,
-            filePreview: currentFile.fullData,
+            ...payload, 
+            filePreview: currentFile.fullData, 
             fileName: currentFile.Name
         });
         localStorage.setItem('intranet_v3', JSON.stringify(state));
@@ -177,45 +73,10 @@ async function publishNotice() {
             showPage('public');
             status.style.display = 'none';
             btn.disabled = false;
-        }, 1500);
+            renderPublic(); // Cập nhật lại danh sách bài đăng
+        }, 2000);
     } catch(e) {
         alert("Lỗi: " + e.message);
         btn.disabled = false;
-        status.textContent = "❌ Lỗi gửi tin";
     }
 }
-
-function renderPublic() {
-    const grid = document.getElementById('noticeGrid');
-    if (!state.notices.length) {
-        grid.innerHTML = '<p style="text-align:center;color:#999;margin-top:50px">Chưa có thông báo.</p>';
-        return;
-    }
-    grid.innerHTML = state.notices.slice().reverse().map(n => `
-        <div class="notice-card">
-            <div class="notice-title">${n.title}</div>
-            <div style="font-size:14px;color:#444;line-height:1.6">${n.content.replace(/\n/g, '<br>')}</div>
-            ${n.filePreview ? `
-                <div style="margin-top:15px; padding:10px; background:#f0f0f0; border-radius:5px">
-                    ${n.filePreview.includes('image') ? 
-                        `<img src="${n.filePreview}" style="max-width:100%">` : 
-                        `<a href="${n.filePreview}" download="${n.fileName}">📎 ${n.fileName}</a>`}
-                </div>
-            ` : ''}
-            <div style="font-size:11px;color:#888;margin-top:10px">📅 ${n.date}</div>
-        </div>
-    `).join('');
-}
-
-function clearForm() {
-    document.getElementById('noticeTitle').value = "";
-    document.getElementById('noticeContent').value = "";
-    document.getElementById('noticeFile').value = "";
-    document.getElementById('fileName').textContent = "Chưa có file";
-    currentFile = { Name: "", ContentBytes: "", type: "", fullData: "" };
-}
-
-init();
-</script>
-</body>
-</html>
