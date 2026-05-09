@@ -277,12 +277,15 @@ async function publishNotice() {
     if (!title || !content) return alert("Vui lòng điền đủ thông tin");
 
     const payload = {
-        title,
-        content,
-        date: new Date().toLocaleString('vi-VN'),
-        fileName: currentFileName,
-        fileData: currentFileData
-    };
+    title: title,
+    content: content,
+    date: new Date().toLocaleString('vi-VN'),
+    // Đảm bảo tên trường ở đây khớp 100% với chữ "attachments" trong Schema ở trên
+    attachments: currentFile.content ? [{
+        Name: currentFile.name,
+        ContentBytes: currentFile.content
+    }] : []
+};
 
     try {
         status.style.display = 'block';
