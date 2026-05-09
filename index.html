@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thông Báo Nội Bộ</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1a1a2e;
+    --accent: #e94560;
+    --accent2: #f5a623;
+    --surface: #ffffff;
+    --surface2: #f8f7f4;
+    --border: #e8e6e0;
+    --text: #1a1a2e;
+    --text-muted: #888880;
+    --success: #2ecc71;
+    --danger: #e74c3c;
+    --radius: 12px;
+    --shadow: 0 4px 24px rgba(26,26,46,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--surface2); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  .site-header {
+    background: var(--primary); color: #fff;
+    padding: 0 2rem; display: flex; align-items: center; justify-content: space-between;
+    height: 64px; position: sticky; top: 0; z-index: 100;
+  }
+  .site-logo { font-family: 'Playfair Display', serif; font-size: 20px; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; }
+  .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: inline-block; }
+  .header-nav { display: flex; gap: 8px; align-items: center; }
+  .nav-tab { padding: 6px 16px; border-radius: 20px; border: none; cursor: pointer; font-family: 'Be Vietnam Pro', sans-serif; font-size: 13px; font-weight: 500; transition: all 0.2s; background: transparent; color: rgba(255,255,255,0.6); }
+  .nav-tab.active, .nav-tab:hover { background: rgba(255,255,255,0.12); color: #fff; }
+  .nav-tab.accent-tab { background: var(--accent); color: #fff; }
+  .logout-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-family: 'Be Vietnam Pro', sans-serif; font-size: 13px; transition: all 0.2s; }
+  .logout-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+  /* PAGES */
+  .page { display: none; padding: 2rem; max-width: 960px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* PUBLIC */
+  .page-title { font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 4px; color: var(--primary); }
+  .page-subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 2rem; }
+  .notice-grid { display: grid; gap: 16px; }
+  .notice-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow); animation: slideUp 0.3s ease; }
+  @keyframes slideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .notice-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .notice-title { font-size: 17px; font-weight: 600; color: var(--primary); }
+  .notice-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+  .badge-urgent { background: #fde8e8; color: #c0392b; }
+  .badge-info { background: #e8f4fd; color: #2471a3; }
+  .badge-general { background: #eaf5ea; color: #1e8449; }
+  .notice-body { font-size: 14px; color: #444; line-height: 1.7; margin-bottom: 12px; }
+  .notice-footer { display: flex; align-items: center; gap: 16px; font-size: 12px; color: var(--text-muted); }
+  .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-muted); }
+  .empty-icon { font-size: 48px; margin-bottom: 1rem; }
+  .empty-state h3 { font-size: 18px; margin-bottom: 8px; color: var(--text); }
+
+  /* LOGIN */
+  .login-wrap { min-height: calc(100vh - 64px); display: flex; align-items: center; justify-content: center; }
+  .login-card { background: var(--surface); border-radius: 20px; padding: 2.5rem; border: 1px solid var(--border); box-shadow: var(--shadow); width: 100%; max-width: 400px; }
+  .login-title { font-family: 'Playfair Display', serif; font-size: 26px; margin-bottom: 4px; }
+  .login-subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 2rem; }
+  .err-msg { color: var(--danger); font-size: 13px; margin-top: -10px; margin-bottom: 12px; display: none; }
+
+  /* FORMS */
+  label { font-size: 13px; font-weight: 500; color: var(--text); display: block; margin-bottom: 6px; }
+  input[type=text], input[type=password], input[type=email], input[type=url], textarea, select {
+    width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px;
+    font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px; color: var(--text);
+    background: var(--surface2); outline: none; transition: border-color 0.2s; margin-bottom: 16px;
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); background: #fff; }
+  textarea { resize: vertical; min-height: 130px; line-height: 1.6; }
+  .btn { padding: 10px 24px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px; font-weight: 600; transition: all 0.2s; }
+  .btn-primary { background: var(--accent); color: #fff; width: 100%; padding: 12px; }
+  .btn-primary:hover { background: #c73652; transform: translateY(-1px); }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--border); }
+  .btn-sm { padding: 7px 16px; font-size: 13px; }
+
+  /* ADMIN */
+  .admin-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 700px) { .admin-layout { grid-template-columns: 1fr; } }
+  .panel { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow); }
+  .panel-title { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
+
+  .send-btn {
+    width: 100%; padding: 14px; font-size: 15px; border-radius: 10px;
+    background: var(--primary); color: #fff; border: none; cursor: pointer;
+    font-family: 'Be Vietnam Pro', sans-serif; font-weight: 600; margin-top: 4px;
+    transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .send-btn:hover:not(:disabled) { background: #2d2d50; transform: translateY(-1px); }
+  .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .status-bar { padding: 12px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; margin-top: 12px; display: none; line-height: 1.5; }
+  .status-bar.success { background: #eafaf1; color: #1e8449; display: block; }
+  .status-bar.error { background: #fde8e8; color: #c0392b; display: block; }
+  .status-bar.loading { background: #fef9e7; color: #b7770d; display: block; }
+
+  .progress-wrap { margin-top: 12px; display: none; }
+  .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); width: 0%; transition: width 0.4s; border-radius: 3px; }
+  .progress-text { font-size: 12px; color: var(--text-muted); text-align: center; }
+
+  /* notices list admin */
+  .notices-admin-list { max-height: 300px; overflow-y: auto; }
+  .notice-admin-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+  .notice-admin-item:last-child { border-bottom: none; }
+  .nai-title { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nai-meta { font-size: 12px; color: var(--text-muted); }
+  .nai-del { color: var(--danger); border: none; background: none; cursor: pointer; font-size: 18px; flex-shrink: 0; }
+
+  /* SETTINGS */
+  .setting-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.6; }
+  .save-row { display: flex; justify-content: flex-end; margin-top: 4px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+  .tag-req { background: #fde8e8; color: #c0392b; }
+
+  /* webhook URL box */
+  .url-box {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 14px; font-size: 13px; font-family: monospace; color: var(--text-muted);
+    word-break: break-all; margin-bottom: 12px; min-height: 44px; line-height: 1.5;
+  }
+  .url-placeholder { color: #ccc; font-style: italic; font-family: 'Be Vietnam Pro', sans-serif; font-size: 13px; }
+
+  /* info box */
+  .info-box { background: #e8f4fd; border-left: 3px solid #2471a3; border-radius: 0 8px 8px 0; padding: 12px 14px; font-size: 13px; color: #1a4971; line-height: 1.6; margin-bottom: 16px; }
+  .info-box strong { font-weight: 600; }
+  .step-list { padding-left: 0; list-style: none; counter-reset: step; }
+  .step-list li { counter-increment: step; display: flex; gap: 10px; margin-bottom: 10px; font-size: 13px; line-height: 1.5; }
+  .step-list li::before { content: counter(step); background: var(--primary); color: #fff; font-weight: 700; font-size: 11px; min-width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  code { background: rgba(0,0,0,0.06); padding: 1px 6px; border-radius: 4px; font-size: 12px; font-family: monospace; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-logo"><span class="logo-dot"></span>Thông Báo Nội Bộ</div>
+  <div class="header-nav" id="headerNav">
+    <button class="nav-tab active" onclick="showPage('public')">📢 Thông báo</button>
+    <button class="nav-tab accent-tab" id="adminLoginBtn">🔐 Admin</button>
+  </div>
+</header>
+
+<!-- PUBLIC -->
+<div class="page active" id="page-public">
+  <h1 class="page-title">Thông báo</h1>
+  <p class="page-subtitle" id="publicSubtitle">Đang tải...</p>
+  <div class="notice-grid" id="noticeGrid"></div>
+</div>
+
+<!-- LOGIN -->
+<div class="page" id="page-login">
+  <div class="login-wrap">
+    <div class="login-card">
+      <h2 class="login-title">Đăng nhập Admin</h2>
+      <p class="login-subtitle">Chỉ dành cho quản lý & nhân sự</p>
+      <label>Tên đăng nhập</label>
+      <input type="text" id="loginUser" placeholder="admin" onkeydown="if(event.key==='Enter')doLogin()">
+      <label>Mật khẩu</label>
+      <input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      <div class="err-msg" id="loginErr">❌ Sai tên đăng nhập hoặc mật khẩu</div>
+      <button class="btn btn-primary" onclick="doLogin()">Đăng nhập →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+  <h1 class="page-title">Bảng điều khiển</h1>
+  <p class="page-subtitle">Đăng thông báo → Power Automate gửi email đến toàn bộ nhân viên</p>
+
+  <div class="admin-layout">
+    <!-- LEFT: Soạn thông báo -->
+    <div>
+      <div class="panel">
+        <div class="panel-title">✍️ Soạn thông báo mới</div>
+        <label>Tiêu đề thông báo</label>
+        <input type="text" id="noticeTitle" placeholder="VD: Lịch nghỉ lễ tháng 9...">
+        <div class="form-row">
+          <div>
+            <label>Loại thông báo</label>
+            <select id="noticeType">
+              <option value="general">📗 Thông thường</option>
+              <option value="info">📘 Thông tin</option>
+              <option value="urgent">📕 Khẩn cấp</option>
+            </select>
+          </div>
+          <div>
+            <label>Người đăng</label>
+            <input type="text" id="noticeAuthor" placeholder="Ban Nhân Sự">
+          </div>
+        </div>
+        <label>Nội dung</label>
+        <textarea id="noticeContent" placeholder="Nhập nội dung thông báo chi tiết..."></textarea>
+
+        <button class="send-btn" id="sendBtn" onclick="publishNotice()">
+          <span id="sendIcon">📤</span>
+          <span id="sendText">Đăng & Gửi qua Power Automate</span>
+        </button>
+        <div class="progress-wrap" id="progressWrap">
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="progress-text" id="progressText">Đang gửi đến Power Automate...</div>
+        </div>
+        <div class="status-bar" id="sendStatus"></div>
+      </div>
+
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-title">📋 Thông báo đã đăng</div>
+        <div class="notices-admin-list" id="adminNoticeList">
+          <div style="text-align:center;padding:2rem;color:var(--text-muted);font-size:13px;">Chưa có thông báo</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Hướng dẫn -->
+    <div>
+      <div class="panel">
+        <div class="panel-title">🔑 Đổi thông tin đăng nhập</div>
+        <div class="info-box" style="margin-bottom:0;">
+          Mở file <strong>index.html</strong> bằng Notepad hoặc VS Code, tìm đoạn sau ở đầu phần <code>&lt;script&gt;</code> và sửa trực tiếp:
+          <br><br>
+          <div style="background:#1a1a2e;border-radius:6px;padding:12px;font-family:monospace;font-size:12px;line-height:1.8;color:#a8d8a8;">
+            <span style="color:#888;">// Tên đăng nhập</span><br>
+            const ADMIN_USER = <span style="color:#f5a623;">'admin'</span>;<br>
+            <span style="color:#888;">// Mật khẩu</span><br>
+            const ADMIN_PASS = <span style="color:#f5a623;">'admin123'</span>;<br>
+            <br>
+            <span style="color:#888;">// Webhook URL Power Automate</span><br>
+            const WEBHOOK_URL = <span style="color:#e94560;">''</span>; <span style="color:#888;">← dán URL vào đây</span>
+          </div>
+          <br>
+          Sau khi sửa → Save file → upload lên GitHub thay thế file cũ.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ─────────────────────────────────────────────────────────────────────
+// 👇 ĐỔI TÊN ĐĂNG NHẬP VÀ MẬT KHẨU TẠI ĐÂY
+const ADMIN_USER = 'admin';
+const ADMIN_PASS = 'admin123';
+// 👇 DÁN POWER AUTOMATE HTTP TRIGGER URL VÀO ĐÂY (sau khi tạo xong flow)
+const WEBHOOK_URL = '';
+
+const SK = 'intranet_v2';
+let state = { notices: [] };
+function load() { try { const s = localStorage.getItem(SK); if (s) state = {...state, ...JSON.parse(s)}; } catch(e) {} }
+function save() { localStorage.setItem(SK, JSON.stringify(state)); }
+
+// ── NAV ───────────────────────────────────────────────────────────────────────
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  if (p === 'public') renderPublic();
+  if (p === 'admin') { renderAdminNotices(); }
+}
+
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    document.getElementById('loginErr').style.display = 'none';
+    document.getElementById('adminLoginBtn').textContent = '⚙️ Admin';
+    document.getElementById('adminLoginBtn').onclick = () => showPage('admin');
+    if (!document.getElementById('logoutBtn')) {
+      const lb = document.createElement('button');
+      lb.className = 'logout-btn'; lb.id = 'logoutBtn'; lb.textContent = 'Đăng xuất'; lb.onclick = doLogout;
+      document.getElementById('headerNav').appendChild(lb);
+    }
+    showPage('admin');
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+  }
+}
+function doLogout() {
+  const lb = document.getElementById('logoutBtn'); if (lb) lb.remove();
+  document.getElementById('adminLoginBtn').textContent = '🔐 Admin';
+  document.getElementById('adminLoginBtn').onclick = () => showPage('login');
+  showPage('public');
+}
+
+// ── PUBLIC RENDER ─────────────────────────────────────────────────────────────
+function renderPublic() {
+  const grid = document.getElementById('noticeGrid');
+  document.getElementById('publicSubtitle').textContent = state.notices.length + ' thông báo · Cập nhật ' + new Date().toLocaleDateString('vi-VN');
+  if (!state.notices.length) {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><h3>Chưa có thông báo nào</h3><p>Các thông báo mới sẽ hiển thị tại đây.</p></div>`;
+    return;
+  }
+  const badges = { urgent:['badge-urgent','🔴 Khẩn cấp'], info:['badge-info','🔵 Thông tin'], general:['badge-general','🟢 Thông thường'] };
+  grid.innerHTML = state.notices.slice().reverse().map(n => {
+    const [bc, bl] = badges[n.type] || badges.general;
+    return `<div class="notice-card">
+      <div class="notice-header">
+        <div class="notice-title">${esc(n.title)}</div>
+        <span class="notice-badge ${bc}">${bl}</span>
+      </div>
+      <div class="notice-body">${esc(n.content).replace(/\n/g,'<br>')}</div>
+      <div class="notice-footer">
+        <span>📅 ${n.date}</span><span>👤 ${esc(n.author)}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── ADMIN RENDER ──────────────────────────────────────────────────────────────
+function renderAdminNotices() {
+  const list = document.getElementById('adminNoticeList');
+  if (!state.notices.length) {
+    list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted);font-size:13px;">Chưa có thông báo</div>';
+    return;
+  }
+  list.innerHTML = state.notices.slice().reverse().map((n, ri) => {
+    const i = state.notices.length - 1 - ri;
+    return `<div class="notice-admin-item">
+      <div style="flex:1;min-width:0;">
+        <div class="nai-title">${esc(n.title)}</div>
+        <div class="nai-meta">${n.date} · ${n.emailSent ? '✅ Đã gửi email' : '⚠️ Chưa gửi email'}</div>
+      </div>
+      <button class="nai-del" onclick="deleteNotice(${i})">🗑</button>
+    </div>`;
+  }).join('');
+}
+function deleteNotice(i) {
+  if (!confirm('Xoá thông báo này?')) return;
+  state.notices.splice(i, 1); save(); renderAdminNotices(); renderPublic();
+}
+
+// ── PUBLISH ───────────────────────────────────────────────────────────────────
+async function publishNotice() {
+  const title   = document.getElementById('noticeTitle').value.trim();
+  const content = document.getElementById('noticeContent').value.trim();
+  const type    = document.getElementById('noticeType').value;
+  const author  = document.getElementById('noticeAuthor').value.trim() || 'Admin';
+  if (!title || !content) { showStatus('sendStatus', '⚠️ Vui lòng nhập tiêu đề và nội dung', 'error'); return; }
+
+  const date = new Date().toLocaleString('vi-VN', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  const payload = { title, content, type, author, date };
+
+  const webhookUrl = WEBHOOK_URL;
+  const btn = document.getElementById('sendBtn');
+  const wrap = document.getElementById('progressWrap');
+  const fill = document.getElementById('progressFill');
+  const pt   = document.getElementById('progressText');
+
+  // Animate progress
+  btn.disabled = true;
+  document.getElementById('sendText').textContent = 'Đang gửi...';
+  wrap.style.display = 'block';
+  fill.style.width = '20%';
+  pt.textContent = 'Đang kết nối Power Automate...';
+
+  if (!webhookUrl) {
+    // No URL — just save locally
+    fill.style.width = '100%';
+    pt.textContent = 'Đã lưu thông báo (chưa có Webhook URL)';
+    state.notices.push({ ...payload, emailSent: false });
+    save(); clearForm(); renderAdminNotices();
+    btn.disabled = false;
+    document.getElementById('sendText').textContent = 'Đăng & Gửi qua Power Automate';
+    showStatus('sendStatus', '⚠️ Đã đăng thông báo nhưng chưa gửi email vì chưa cấu hình Webhook URL.', 'error');
+    return;
+  }
+
+  try {
+    fill.style.width = '50%';
+    pt.textContent = 'Đang gửi đến Power Automate...';
+
+    const res = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    fill.style.width = '100%';
+
+    if (res.ok || res.status === 202) {
+      state.notices.push({ ...payload, emailSent: true });
+      save(); clearForm(); renderAdminNotices();
+      pt.textContent = '✅ Power Automate đã nhận & đang xử lý';
+      showStatus('sendStatus', '✅ Đã gửi thành công! Power Automate đang gửi email đến toàn bộ nhân viên từ SharePoint List.', 'success');
+    } else {
+      throw new Error('HTTP ' + res.status);
+    }
+  } catch(err) {
+    fill.style.width = '100%';
+    pt.textContent = '❌ Lỗi kết nối';
+    // Save without email flag
+    state.notices.push({ ...payload, emailSent: false });
+    save(); clearForm(); renderAdminNotices();
+
+    let errMsg = '❌ Không thể kết nối Power Automate. ';
+    if (err.message.includes('Failed to fetch') || err.message.includes('CORS')) {
+      errMsg += 'Lỗi CORS: Trong Power Automate, bước "Response" cần thêm header <code>Access-Control-Allow-Origin: *</code>';
+    } else {
+      errMsg += 'Chi tiết: ' + err.message;
+    }
+    showStatus('sendStatus', errMsg, 'error');
+  } finally {
+    btn.disabled = false;
+    document.getElementById('sendText').textContent = 'Đăng & Gửi qua Power Automate';
+  }
+}
+
+function clearForm() {
+  document.getElementById('noticeTitle').value = '';
+  document.getElementById('noticeContent').value = '';
+  document.getElementById('noticeType').value = 'general';
+}
+
+function changePass() {
+  alert('Để đổi mật khẩu, mở file HTML và sửa dòng ADMIN_PASS ở đầu phần <script>.');
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function showStatus(id, msg, type) {
+  const el = document.getElementById(id);
+  el.innerHTML = msg;
+  el.className = 'status-bar ' + type;
+  if (type !== 'loading') setTimeout(() => el.className = 'status-bar', 7000);
+}
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+load();
+renderPublic();
+document.getElementById('adminLoginBtn').onclick = () => showPage('login');
+</script>
+</body>
+</html>
