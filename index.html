@@ -29,14 +29,13 @@
     padding: 0 2rem; display: flex; align-items: center; justify-content: space-between;
     height: 64px; position: sticky; top: 0; z-index: 100;
   }
-  .site-logo { font-family: 'Playfair Display', serif; font-size: 20px; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; }
-  .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: inline-block; }
+  .site-logo { font-family: 'Playfair Display', serif; font-size: 20px; display: flex; align-items: center; gap: 10px; }
+  .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
   .header-nav { display: flex; gap: 8px; align-items: center; }
   .nav-tab { padding: 6px 16px; border-radius: 20px; border: none; cursor: pointer; font-family: 'Be Vietnam Pro', sans-serif; font-size: 13px; font-weight: 500; transition: all 0.2s; background: transparent; color: rgba(255,255,255,0.6); }
   .nav-tab.active, .nav-tab:hover { background: rgba(255,255,255,0.12); color: #fff; }
   .nav-tab.accent-tab { background: var(--accent); color: #fff; }
-  .logout-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-family: 'Be Vietnam Pro', sans-serif; font-size: 13px; transition: all 0.2s; }
-  .logout-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .logout-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; margin-left: 10px; }
 
   /* PAGES */
   .page { display: none; padding: 2rem; max-width: 960px; margin: 0 auto; }
@@ -46,42 +45,32 @@
   .page-title { font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 4px; color: var(--primary); }
   .page-subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 2rem; }
   .notice-grid { display: grid; gap: 16px; }
-  .notice-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow); animation: slideUp 0.3s ease; }
-  @keyframes slideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .notice-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow); }
   .notice-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
-  .notice-body { font-size: 14px; color: #444; line-height: 1.7; margin-bottom: 12px; }
-  .notice-attachment { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
-  .notice-footer { display: flex; align-items: center; gap: 16px; font-size: 12px; color: var(--text-muted); }
+  .notice-body { font-size: 14px; color: #444; line-height: 1.7; }
+  .notice-attachment { margin-top: 15px; padding-top: 12px; border-top: 1px dashed var(--border); }
+  .notice-footer { display: flex; align-items: center; gap: 16px; font-size: 12px; color: var(--text-muted); margin-top: 15px; }
 
-  /* ADMIN & FORMS */
+  /* FORMS & ADMIN */
   .panel { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow); margin-bottom: 20px; }
-  .panel-title { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px; }
-  label { font-size: 13px; font-weight: 500; color: var(--text); display: block; margin-bottom: 6px; }
+  label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px; }
   input[type=text], input[type=password], textarea {
-    width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px;
-    font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px; background: var(--surface2); outline: none; margin-bottom: 16px;
+    width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px;
+    font-family: inherit; font-size: 14px; background: var(--surface2); margin-bottom: 16px; outline: none;
   }
-  textarea { min-height: 120px; }
+  textarea { min-height: 120px; resize: vertical; }
   
-  /* ATTACHMENT BOX */
-  .attach-zone { background: #fcfcfc; border: 2px dashed var(--border); border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 16px; transition: all 0.2s; }
-  .attach-zone:hover { border-color: var(--accent); background: #fff5f6; }
-  #previewImg { max-width: 100%; max-height: 150px; border-radius: 6px; margin-top: 10px; display: none; margin-left: auto; margin-right: auto; }
-  .file-info { font-size: 12px; color: var(--text-muted); margin-top: 5px; display: block; }
+  .attach-zone { background: #fcfcfc; border: 2px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 16px; }
+  #previewImg { max-width: 100%; max-height: 200px; border-radius: 6px; margin-top: 10px; display: none; margin-inline: auto; }
 
   .send-btn {
     width: 100%; padding: 14px; font-size: 15px; border-radius: 10px;
-    background: var(--primary); color: #fff; border: none; cursor: pointer;
-    font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;
+    background: var(--primary); color: #fff; border: none; cursor: pointer; font-weight: 600;
   }
-  .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .status-bar { padding: 12px; border-radius: 8px; font-size: 13px; margin-top: 12px; display: none; }
-  .status-bar.success { background: #eafaf1; color: #1e8449; display: block; }
-  .status-bar.error { background: #fde8e8; color: #c0392b; display: block; }
+  .send-btn:disabled { opacity: 0.5; }
 
   /* LOGIN */
-  .login-wrap { min-height: calc(100vh - 150px); display: flex; align-items: center; justify-content: center; }
+  .login-wrap { min-height: 60vh; display: flex; align-items: center; justify-content: center; }
   .login-card { background: var(--surface); border-radius: 20px; padding: 2.5rem; border: 1px solid var(--border); box-shadow: var(--shadow); width: 100%; max-width: 400px; }
 </style>
 </head>
@@ -90,90 +79,95 @@
 <header class="site-header">
   <div class="site-logo"><span class="logo-dot"></span>Thông Báo Nội Bộ</div>
   <div class="header-nav" id="headerNav">
-    <button class="nav-tab active" onclick="showPage('public')">📢 Thông báo</button>
-    <button class="nav-tab accent-tab" id="adminLoginBtn">🔐 Admin</button>
+    <button class="nav-tab active" id="tab-public" onclick="showPage('public')">📢 Thông báo</button>
+    <button class="nav-tab accent-tab" id="tab-login" onclick="showPage('login')">🔐 Admin</button>
   </div>
 </header>
 
-<!-- TRANG CHỦ (PUBLIC) -->
+<!-- PUBLIC PAGE -->
 <div class="page active" id="page-public">
   <h1 class="page-title">Thông báo</h1>
   <p class="page-subtitle" id="publicSubtitle">Đang tải...</p>
   <div class="notice-grid" id="noticeGrid"></div>
 </div>
 
-<!-- ĐĂNG NHẬP -->
+<!-- LOGIN PAGE -->
 <div class="page" id="page-login">
   <div class="login-wrap">
     <div class="login-card">
-      <h2 style="margin-bottom:8px">Đăng nhập Admin</h2>
+      <h2 style="margin-bottom:20px">Quản trị viên</h2>
       <label>Tên đăng nhập</label>
       <input type="text" id="loginUser" placeholder="admin">
       <label>Mật khẩu</label>
       <input type="password" id="loginPass" placeholder="••••••••">
-      <div id="loginErr" style="color:var(--danger); font-size:13px; margin-bottom:10px; display:none">❌ Thông tin không chính xác</div>
+      <p id="loginErr" style="color:var(--danger); font-size:13px; margin-bottom:10px; display:none">❌ Sai tài khoản hoặc mật khẩu</p>
       <button class="send-btn" onclick="doLogin()">Đăng nhập</button>
     </div>
   </div>
 </div>
 
-<!-- QUẢN TRỊ (ADMIN) -->
+<!-- ADMIN PAGE -->
 <div class="page" id="page-admin">
   <h1 class="page-title">Bảng điều khiển</h1>
   <div class="panel">
-    <div class="panel-title">✍️ Soạn thông báo mới</div>
+    <label>Tiêu đề thông báo</label>
+    <input type="text" id="noticeTitle" placeholder="VD: Thông báo lịch trực tết...">
     
-    <label>Tiêu đề</label>
-    <input type="text" id="noticeTitle" placeholder="VD: Thông báo nghỉ lễ...">
-    
-    <label>Nội dung chi tiết</label>
-    <textarea id="noticeContent" placeholder="Nhập nội dung..."></textarea>
+    <label>Nội dung</label>
+    <textarea id="noticeContent" placeholder="Nhập nội dung chi tiết tại đây..."></textarea>
 
-    <label>Đính kèm (Ảnh hoặc Tài liệu)</label>
+    <label>Đính kèm hình ảnh/tài liệu</label>
     <div class="attach-zone">
       <input type="file" id="noticeFile" style="display:none" onchange="handleFile(this)">
-      <button type="button" onclick="document.getElementById('noticeFile').click()" style="background:#eee; border:1px solid #ccc; padding:5px 12px; border-radius:4px; cursor:pointer; font-size:13px">Chọn tập tin</button>
-      <span id="fileNameDisplay" class="file-info">Chưa có tệp nào được chọn</span>
+      <button type="button" onclick="document.getElementById('noticeFile').click()" style="padding:8px 16px; cursor:pointer">Chọn tệp</button>
+      <p id="fileNameDisplay" style="font-size:12px; color:#888; margin-top:8px">Chưa có tệp nào</p>
       <img id="previewImg" src="">
     </div>
 
-    <button class="send-btn" id="sendBtn" onclick="publishNotice()">
-      <span id="sendText">Đăng & Gửi qua Power Automate</span>
-    </button>
-    <div class="status-bar" id="sendStatus"></div>
+    <button class="send-btn" id="sendBtn" onclick="publishNotice()">Đăng & Gửi Power Automate</button>
+    <div id="sendStatus" style="margin-top:10px; font-size:13px; display:none"></div>
   </div>
 
   <div class="panel">
-    <div class="panel-title">📋 Lịch sử đã đăng</div>
-    <div id="adminNoticeList" style="font-size:14px"></div>
+    <h3>Lịch sử thông báo</h3>
+    <div id="adminNoticeList" style="margin-top:15px"></div>
   </div>
 </div>
 
 <script>
+// --- CẤU HÌNH ---
 const ADMIN_USER = 'admin';
 const ADMIN_PASS = 'admin123';
-const WEBHOOK_URL = ''; // Dán URL Power Automate của bạn vào đây
+const WEBHOOK_URL = ''; // DÁN URL POWER AUTOMATE VÀO ĐÂY
 
 let state = { notices: [] };
 let currentFileData = null;
 let currentFileName = "";
 
-function load() { 
-    try { 
-        const s = localStorage.getItem('intranet_v3'); 
-        if (s) state = JSON.parse(s); 
-    } catch(e) {} 
-}
-function save() { localStorage.setItem('intranet_v3', JSON.stringify(state)); }
-
-function showPage(p) {
-    document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-    document.getElementById('page-' + p).classList.add('active');
-    if (p === 'public') renderPublic();
-    if (p === 'admin') renderAdminNotices();
+// --- KHỞI TẠO ---
+function init() {
+    try {
+        const saved = localStorage.getItem('intranet_v3');
+        if (saved) state = JSON.parse(saved);
+    } catch(e) { console.error("Lỗi tải dữ liệu", e); }
+    renderPublic();
 }
 
-// Xử lý File
+// --- ĐIỀU HƯỚNG ---
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    
+    document.getElementById('page-' + pageId).classList.add('active');
+    if(document.getElementById('tab-' + pageId)) {
+        document.getElementById('tab-' + pageId).classList.add('active');
+    }
+
+    if (pageId === 'public') renderPublic();
+    if (pageId === 'admin') renderAdminNotices();
+}
+
+// --- XỬ LÝ FILE ---
 function handleFile(input) {
     const file = input.files[0];
     const display = document.getElementById('fileNameDisplay');
@@ -197,99 +191,103 @@ function handleFile(input) {
     }
 }
 
-// Auth
+// --- ĐĂNG NHẬP ---
 function doLogin() {
     const u = document.getElementById('loginUser').value;
     const p = document.getElementById('loginPass').value;
+    
     if (u === ADMIN_USER && p === ADMIN_PASS) {
-        document.getElementById('adminLoginBtn').textContent = '⚙️ Admin';
-        document.getElementById('adminLoginBtn').onclick = () => showPage('admin');
+        document.getElementById('loginErr').style.display = 'none';
+        
+        // Cập nhật nút Admin thành nút vào thẳng bảng điều khiển
+        const adminBtn = document.getElementById('tab-login');
+        adminBtn.innerHTML = "⚙️ Quản lý";
+        adminBtn.onclick = () => showPage('admin');
+        
+        // Thêm nút đăng xuất nếu chưa có
+        if (!document.getElementById('logoutBtn')) {
+            const logoutBtn = document.createElement('button');
+            logoutBtn.id = 'logoutBtn';
+            logoutBtn.className = 'logout-btn';
+            logoutBtn.textContent = 'Thoát';
+            logoutBtn.onclick = () => location.reload();
+            document.getElementById('headerNav').appendChild(logoutBtn);
+        }
+        
         showPage('admin');
     } else {
         document.getElementById('loginErr').style.display = 'block';
     }
 }
 
-// Render Public
+// --- HIỂN THỊ TIN TỨC ---
 function renderPublic() {
     const grid = document.getElementById('noticeGrid');
-    document.getElementById('publicSubtitle').textContent = state.notices.length + ' thông báo đang hiển thị';
+    document.getElementById('publicSubtitle').textContent = state.notices.length + " thông báo đang hiển thị";
     
-    if (!state.notices.length) {
-        grid.innerHTML = '<div style="text-align:center; padding:50px; color:#888">Chưa có thông báo nào.</div>';
+    if (state.notices.length === 0) {
+        grid.innerHTML = '<p style="text-align:center; padding:40px; color:#999">Chưa có thông báo nào.</p>';
         return;
     }
 
     grid.innerHTML = state.notices.slice().reverse().map(n => {
-        let attachHtml = "";
+        let attachment = "";
         if (n.fileData) {
             if (n.fileData.startsWith('data:image/')) {
-                attachHtml = `<div class="notice-attachment"><img src="${n.fileData}" style="max-width:100%; border-radius:8px;"></div>`;
+                attachment = `<div class="notice-attachment"><img src="${n.fileData}" style="max-width:100%; border-radius:8px"></div>`;
             } else {
-                attachHtml = `<div class="notice-attachment"><a href="${n.fileData}" download="${n.fileName}" style="color:var(--accent); text-decoration:none; font-weight:500">📎 Tải tệp đính kèm: ${n.fileName}</a></div>`;
+                attachment = `<div class="notice-attachment"><a href="${n.fileData}" download="${n.fileName}" style="color:var(--accent); text-decoration:none; font-weight:600">📎 Tải tập tin: ${n.fileName}</a></div>`;
             }
         }
-
         return `
-        <div class="notice-card">
-            <div class="notice-title">${esc(n.title)}</div>
-            <div class="notice-body">${esc(n.content).replace(/\n/g,'<br>')}</div>
-            ${attachHtml}
-            <div class="notice-footer"><span>📅 ${n.date}</span></div>
-        </div>`;
+            <div class="notice-card">
+                <div class="notice-title">${escapeHtml(n.title)}</div>
+                <div class="notice-body">${escapeHtml(n.content).replace(/\n/g, '<br>')}</div>
+                ${attachment}
+                <div class="notice-footer"><span>📅 ${n.date}</span></div>
+            </div>
+        `;
     }).join('');
 }
 
-// Render Lịch sử Admin
 function renderAdminNotices() {
     const list = document.getElementById('adminNoticeList');
-    if (!state.notices.length) {
-        list.innerHTML = 'Chưa có thông báo.';
-        return;
-    }
     list.innerHTML = state.notices.slice().reverse().map((n, i) => `
-        <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee">
-            <div>
-                <strong>${esc(n.title)}</strong><br>
-                <small style="color:#888">${n.date}</small>
-            </div>
-            <button onclick="deleteNotice(${state.notices.length - 1 - i})" style="border:none; background:none; color:red; cursor:pointer">Xoá</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee">
+            <span>${escapeHtml(n.title)} <br> <small style="color:#888">${n.date}</small></span>
+            <button onclick="deleteNotice(${state.notices.length - 1 - i})" style="color:red; border:none; background:none; cursor:pointer">Xoá</button>
         </div>
-    `).join('');
+    `).join('') || 'Chưa có thông báo.';
 }
 
-function deleteNotice(i) {
-    if(confirm('Xoá thông báo này?')) {
-        state.notices.splice(i, 1);
-        save();
+function deleteNotice(index) {
+    if (confirm('Bạn chắc chắn muốn xoá?')) {
+        state.notices.splice(index, 1);
+        localStorage.setItem('intranet_v3', JSON.stringify(state));
         renderAdminNotices();
     }
 }
 
-// Đăng bài
+// --- ĐĂNG BÀI ---
 async function publishNotice() {
     const title = document.getElementById('noticeTitle').value.trim();
     const content = document.getElementById('noticeContent').value.trim();
-    const btn = document.getElementById('sendBtn');
+    const status = document.getElementById('sendStatus');
     
-    if (!title || !content) {
-        alert('Vui lòng nhập tiêu đề và nội dung');
-        return;
-    }
+    if (!title || !content) return alert("Vui lòng điền đủ thông tin");
 
-    btn.disabled = true;
-    document.getElementById('sendText').textContent = 'Đang xử lý...';
-
-    const date = new Date().toLocaleString('vi-VN');
-    const payload = { 
-        title, 
-        content, 
-        date, 
-        fileName: currentFileName, 
-        fileData: currentFileData 
+    const payload = {
+        title,
+        content,
+        date: new Date().toLocaleString('vi-VN'),
+        fileName: currentFileName,
+        fileData: currentFileData
     };
 
     try {
+        status.style.display = 'block';
+        status.textContent = "⏳ Đang gửi...";
+        
         if (WEBHOOK_URL) {
             await fetch(WEBHOOK_URL, {
                 method: 'POST',
@@ -297,37 +295,40 @@ async function publishNotice() {
                 body: JSON.stringify(payload)
             });
         }
-        
+
         state.notices.push(payload);
-        save();
-        alert('Đã đăng thông báo thành công!');
-        clearForm();
-        showPage('public');
-    } catch (e) {
-        alert('Lỗi khi gửi Power Automate: ' + e.message);
-    } finally {
-        btn.disabled = false;
-        document.getElementById('sendText').textContent = 'Đăng & Gửi qua Power Automate';
+        localStorage.setItem('intranet_v3', JSON.stringify(state));
+        
+        status.textContent = "✅ Thành công!";
+        setTimeout(() => {
+            status.style.display = 'none';
+            clearForm();
+            showPage('public');
+        }, 1500);
+
+    } catch(e) {
+        status.textContent = "❌ Lỗi: " + e.message;
     }
 }
 
 function clearForm() {
-    document.getElementById('noticeTitle').value = '';
-    document.getElementById('noticeContent').value = '';
-    document.getElementById('noticeFile').value = '';
-    document.getElementById('fileNameDisplay').textContent = 'Chưa có tệp nào được chọn';
+    document.getElementById('noticeTitle').value = "";
+    document.getElementById('noticeContent').value = "";
+    document.getElementById('noticeFile').value = "";
+    document.getElementById('fileNameDisplay').textContent = "Chưa có tệp nào";
     document.getElementById('previewImg').style.display = 'none';
     currentFileData = null;
     currentFileName = "";
 }
 
-function esc(s) {
-    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
-load();
-renderPublic();
+// Khởi động
+init();
 </script>
-
 </body>
 </html>
