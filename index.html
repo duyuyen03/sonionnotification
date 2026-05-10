@@ -127,7 +127,7 @@ const ADMIN_PASS = 'admin1234';
 const WEBHOOK_URL = 'https://defaultaf1f375339254e6f949b97c0073208.03.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/9f15bac38c2640b185716127e7c0ff44/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Bxa82ctx9WzqmiTinfUvl5OuwFHkDyX-LhfbnPq70bs';
 
 // --- QUAN TRỌNG: DÁN LINK WEB APP CỦA BẠN VÀO ĐÂY ---
-const DB_URL = 'https://script.google.com/macros/s/AKfycbwvB-_9-3t6uEIOA1Jkd9TeH4buRpAU9JmO9RRVGr6rWyaGKfUEqBr1LrdvbGHoVRT-qg/exec'; 
+const DB_URL = 'https://script.google.com/macros/s/AKfycbxu6YRabu1_D-DWkxBvo-xoHawOcrfoqfPl-X6VuIff-0XGWd6HCLKh1UtiVEtipBkndw/exec'; 
 
 let state = { notices: [] };
 let selectedFiles = [];
@@ -256,8 +256,27 @@ function renderAdminNotices() {
     `).join('') || 'Chưa có thông báo.';
 }
 
-function deleteNotice(index) {
-    alert("Chức năng xoá yêu cầu cấu hình thêm trên Google Sheets.");
+async function deleteNotice(index) {
+    const noticeToDelete = state.notices[index];
+    if (confirm(`Bạn chắc chắn muốn xoá thông báo: "${noticeToDelete.title}"?`)) {
+        try {
+            // Gửi yêu cầu xoá lên Google Sheets
+            await fetch(DB_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: "delete",
+                    title: noticeToDelete.title
+                })
+            });
+
+            // Cập nhật lại giao diện ngay lập tức
+            state.notices.splice(index, 1);
+            renderAdminNotices();
+            alert("Đã xoá thành công trên hệ thống!");
+        } catch (e) {
+            alert("Lỗi khi xoá: " + e.message);
+        }
+    }
 }
 
 async function publishNotice() {
