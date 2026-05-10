@@ -22,6 +22,7 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--surface2); color: var(--text); min-height: 100vh; }
+  
   /* HEADER */
   .site-header {
     background: var(--primary); color: #fff;
@@ -29,21 +30,22 @@
     height: 64px; position: sticky; top: 0; z-index: 100;
   }
   .company-logo {
-    height: 35px; /* Điều chỉnh độ cao logo cho vừa mắt */
+    height: 35px;
     width: auto;
     margin-right: 15px;
     display: block;
-}
-  .site-logo { font-family: 'Playfair Display', serif; font-size: 20px; display: flex; align-items: center; gap: 10px; }
-  .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  }
+  .site-logo { font-family: 'Playfair Display', serif; font-size: 20px; display: flex; align-items: center; }
   .header-nav { display: flex; gap: 8px; align-items: center; }
   .nav-tab { padding: 6px 16px; border-radius: 20px; border: none; cursor: pointer; font-family: 'Be Vietnam Pro', sans-serif; font-size: 13px; font-weight: 500; transition: all 0.2s; background: transparent; color: rgba(255,255,255,0.6); }
   .nav-tab.active, .nav-tab:hover { background: rgba(255,255,255,0.12); color: #fff; }
   .nav-tab.accent-tab { background: var(--accent); color: #fff; }
   .logout-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; margin-left: 10px; }
+
   /* PAGES */
   .page { display: none; padding: 2rem; max-width: 960px; margin: 0 auto; }
   .page.active { display: block; }
+  
   /* PUBLIC */
   .page-title { font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 4px; color: var(--primary); }
   .page-subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 2rem; }
@@ -52,33 +54,28 @@
   .notice-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
   .notice-body { font-size: 14px; color: #444; line-height: 1.7; }
   .notice-attachment { margin-top: 15px; padding-top: 12px; border-top: 1px dashed var(--border); display: flex; flex-wrap: wrap; gap: 10px; }
-  .notice-attachment img { 
-    max-width: 100%; height: auto; max-height: 400px; border-radius: 8px; border: 1px solid #eee; cursor: zoom-in; transition: transform 0.2s;
-  }
-  .notice-attachment img:hover { transform: scale(1.01); }
+  .notice-attachment img { max-width: 100%; height: auto; max-height: 400px; border-radius: 8px; border: 1px solid #eee; cursor: zoom-in; }
   .notice-footer { display: flex; align-items: center; gap: 16px; font-size: 12px; color: var(--text-muted); margin-top: 15px; }
-  /* FORMS & ADMIN */
+
+  /* ADMIN PANEL */
   .panel { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow); margin-bottom: 20px; }
   label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px; }
   input[type=text], input[type=password], textarea {
     width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px;
     font-family: inherit; font-size: 14px; background: var(--surface2); margin-bottom: 16px; outline: none;
   }
-  textarea { min-height: 120px; resize: vertical; }
   .attach-zone { background: #fcfcfc; border: 2px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 16px; }
   #previewImgContainer { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 10px; }
   .preview-thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
-  .send-btn {
-    width: 100%; padding: 14px; font-size: 15px; border-radius: 10px;
-    background: var(--primary); color: #fff; border: none; cursor: pointer; font-weight: 600;
-  }
+  .send-btn { width: 100%; padding: 14px; font-size: 15px; border-radius: 10px; background: var(--primary); color: #fff; border: none; cursor: pointer; font-weight: 600; }
   .send-btn:disabled { opacity: 0.5; }
 </style>
 </head>
 <body>
+
 <header class="site-header">
   <div class="site-logo">
-    <img src="https://raw.githubusercontent.com/duyuyen03/sonionnotification/main/Logo%20sonion.png" alt="Logo" class="company-logo">
+    <img src="https://raw.githubusercontent.com/duyuyen03/sonionnotification/main/Logo%20sonion.png" alt="Sonion" class="company-logo">
     <span class="logo-text">Thông Báo Nội Bộ</span>
   </div>
   <div class="header-nav" id="headerNav">
@@ -94,16 +91,14 @@
 </div>
 
 <div class="page" id="page-login">
-  <div class="login-wrap">
-    <div class="login-card">
-      <h2 style="margin-bottom:20px">Quản trị viên</h2>
-      <label>Tên đăng nhập</label>
-      <input type="text" id="loginUser" placeholder="admin">
-      <label>Mật khẩu</label>
-      <input type="password" id="loginPass" placeholder="••••••••">
-      <p id="loginErr" style="color:var(--danger); font-size:13px; margin-bottom:10px; display:none">❌ Sai tài khoản hoặc mật khẩu</p>
-      <button class="send-btn" onclick="doLogin()">Đăng nhập</button>
-    </div>
+  <div class="panel" style="max-width: 400px; margin: 40px auto;">
+    <h2 style="margin-bottom:20px">Quản trị viên</h2>
+    <label>Tên đăng nhập (Team)</label>
+    <input type="text" id="loginUser" placeholder="Nhập tên team...">
+    <label>Mật khẩu</label>
+    <input type="password" id="loginPass" placeholder="••••••••">
+    <p id="loginErr" style="color:var(--danger); font-size:13px; margin-bottom:10px; display:none">❌ Sai tài khoản hoặc mật khẩu</p>
+    <button class="send-btn" onclick="doLogin()">Đăng nhập</button>
   </div>
 </div>
 
@@ -113,11 +108,11 @@
     <label>Tiêu đề thông báo</label>
     <input type="text" id="noticeTitle" placeholder="VD: Thông báo lịch trực tết...">
     <label>Nội dung</label>
-    <textarea id="noticeContent" placeholder="Nhập nội dung chi tiết tại đây..."></textarea>
-    <label>Đính kèm hình ảnh/tài liệu (Chọn được nhiều tệp)</label>
+    <textarea id="noticeContent" style="min-height:120px; width:100%; border-radius:8px; border:1px solid var(--border); padding:10px;" placeholder="Nhập nội dung..."></textarea>
+    <label>Đính kèm tài liệu</label>
     <div class="attach-zone">
       <input type="file" id="noticeFile" style="display:none" multiple onchange="handleFile(this)">
-      <button type="button" onclick="document.getElementById('noticeFile').click()" style="padding:8px 16px; cursor:pointer">Chọn tệp</button>
+      <button type="button" onclick="document.getElementById('noticeFile').click()">Chọn tệp</button>
       <p id="fileNameDisplay" style="font-size:12px; color:#888; margin-top:8px">Chưa có tệp nào</p>
       <div id="previewImgContainer"></div>
     </div>
@@ -131,26 +126,20 @@
 </div>
 
 <script>
-const ADMIN_USER = 'admin';
-const ADMIN_PASS = 'admin1234';
+// --- CẤU HÌNH ---
 const WEBHOOK_URL = 'https://defaultaf1f375339254e6f949b97c0073208.03.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/9f15bac38c2640b185716127e7c0ff44/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Bxa82ctx9WzqmiTinfUvl5OuwFHkDyX-LhfbnPq70bs';
-
-// --- QUAN TRỌNG: DÁN LINK WEB APP CỦA BẠN VÀO ĐÂY ---
 const DB_URL = 'https://script.google.com/macros/s/AKfycbxu6YRabu1_D-DWkxBvo-xoHawOcrfoqfPl-X6VuIff-0XGWd6HCLKh1UtiVEtipBkndw/exec'; 
 
-let state = { notices: [] };
+let state = { notices: [], currentUser: "" };
 let selectedFiles = [];
 
 async function init() {
-    document.getElementById('publicSubtitle').textContent = "Đang kết nối máy chủ...";
     try {
-        // Tải dữ liệu từ Google Sheets thay vì LocalStorage
         const response = await fetch(DB_URL);
         state.notices = await response.json();
         renderPublic();
     } catch(e) { 
-        console.error("Lỗi tải dữ liệu", e); 
-        document.getElementById('publicSubtitle').textContent = "Không thể tải dữ liệu.";
+        document.getElementById('publicSubtitle').textContent = "Lỗi kết nối máy chủ.";
     }
 }
 
@@ -158,164 +147,92 @@ function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
     document.getElementById('page-' + pageId).classList.add('active');
-    if(document.getElementById('tab-' + pageId)) document.getElementById('tab-' + pageId).classList.add('active');
+    const tab = document.getElementById('tab-' + pageId);
+    if(tab) tab.classList.add('active');
     if (pageId === 'public') renderPublic();
     if (pageId === 'admin') renderAdminNotices();
 }
 
-async function handleFile(input) {
-    const files = Array.from(input.files);
-    const display = document.getElementById('fileNameDisplay');
-    const container = document.getElementById('previewImgContainer');
-    selectedFiles = [];
-    container.innerHTML = "";
-    if (files.length > 0) {
-        display.textContent = `Đã chọn ${files.length} tệp`;
-        const filePromises = files.map(file => {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    resolve({
-                        Name: file.name,
-                        ContentBytes: e.target.result.split(',')[1],
-                        type: file.type,
-                        fullData: e.target.result
-                    });
-                };
-                reader.readAsDataURL(file);
-            });
-        });
-        selectedFiles = await Promise.all(filePromises);
-        selectedFiles.forEach(f => {
-            if (f.type.startsWith('image/')) {
-                const img = document.createElement('img');
-                img.src = f.fullData;
-                img.className = 'preview-thumb';
-                container.appendChild(img);
-            }
-        });
-    }
-}
-
-function doLogin() {
+async function doLogin() {
     const u = document.getElementById('loginUser').value;
     const p = document.getElementById('loginPass').value;
-    if (u === ADMIN_USER && p === ADMIN_PASS) {
-        document.getElementById('loginErr').style.display = 'none';
-        const adminBtn = document.getElementById('tab-login');
-        adminBtn.innerHTML = "⚙️ Quản lý";
-        adminBtn.onclick = () => showPage('admin');
-        if (!document.getElementById('logoutBtn')) {
-            const logoutBtn = document.createElement('button');
-            logoutBtn.id = 'logoutBtn';
-            logoutBtn.className = 'logout-btn';
-            logoutBtn.textContent = 'Thoát';
-            logoutBtn.onclick = () => location.reload();
-            document.getElementById('headerNav').appendChild(logoutBtn);
+    const err = document.getElementById('loginErr');
+
+    try {
+        const response = await fetch(DB_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: "check_login", username: u, password: p })
+        });
+        const result = await response.json();
+
+        if (result.success) {
+            err.style.display = 'none';
+            state.currentUser = result.team;
+            const adminBtn = document.getElementById('tab-login');
+            adminBtn.innerHTML = "⚙️ Quản lý";
+            adminBtn.onclick = () => showPage('admin');
+            
+            if (!document.getElementById('logoutBtn')) {
+                const logoutBtn = document.createElement('button');
+                logoutBtn.className = 'logout-btn';
+                logoutBtn.id = 'logoutBtn';
+                logoutBtn.textContent = 'Thoát';
+                logoutBtn.onclick = () => location.reload();
+                document.getElementById('headerNav').appendChild(logoutBtn);
+            }
+            showPage('admin');
+            alert("Xin chào " + result.team);
+        } else {
+            err.style.display = 'block';
         }
-        showPage('admin');
-    } else {
-        document.getElementById('loginErr').style.display = 'block';
-    }
+    } catch(e) { alert("Lỗi đăng nhập!"); }
 }
 
-function renderPublic() {
-    const grid = document.getElementById('noticeGrid');
-    document.getElementById('publicSubtitle').textContent = state.notices.length + " thông báo đang hiển thị";
-    if (state.notices.length === 0) {
-        grid.innerHTML = '<p style="text-align:center; padding:40px; color:#999">Chưa có thông báo nào.</p>';
-        return;
-    }
-    grid.innerHTML = state.notices.slice().reverse().map(n => {
-        let attachmentsHTML = "";
-        if (n.files && n.files.length > 0) {
-            attachmentsHTML = '<div class="notice-attachment">';
-            n.files.forEach(f => {
-                if (f.data.startsWith('data:image/')) {
-                    attachmentsHTML += `<img src="${f.data}" onclick="openFullImage('${f.data}')" title="Nhấp để xem ảnh lớn">`;
-                } else {
-                    attachmentsHTML += `<a href="${f.data}" download="${f.name}" style="color:var(--accent); text-decoration:none; font-size:12px; font-weight:600; border:1px solid #eee; padding:5px 10px; border-radius:4px">📎 ${f.name}</a>`;
-                }
+async function handleFile(input) {
+    const files = Array.from(input.files);
+    const container = document.getElementById('previewImgContainer');
+    container.innerHTML = "";
+    selectedFiles = await Promise.all(files.map(file => {
+        return new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = e => resolve({
+                Name: file.name,
+                ContentBytes: e.target.result.split(',')[1],
+                type: file.type,
+                fullData: e.target.result
             });
-            attachmentsHTML += '</div>';
+            reader.readAsDataURL(file);
+        });
+    }));
+    selectedFiles.forEach(f => {
+        if (f.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = f.fullData;
+            img.className = 'preview-thumb';
+            container.appendChild(img);
         }
-        return `
-            <div class="notice-card">
-                <div class="notice-title">${escapeHtml(n.title)}</div>
-                <div class="notice-body">${escapeHtml(n.content).replace(/\n/g, '<br>')}</div>
-                ${attachmentsHTML}
-                <div class="notice-footer"><span>📅 ${n.date}</span></div>
-            </div>
-        `;
-    }).join('');
-}
-
-function openFullImage(base64Data) {
-    const win = window.open();
-    win.document.write(`<body style="margin:0; background:#111; display:flex; align-items:center; justify-content:center;"><img src="${base64Data}" style="max-width:100%; max-height:100vh; cursor:zoom-out" onclick="window.close()"></body>`);
-}
-
-function renderAdminNotices() {
-    const list = document.getElementById('adminNoticeList');
-    list.innerHTML = state.notices.slice().reverse().map((n, i) => `
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee">
-            <span>${escapeHtml(n.title)} <br> <small style="color:#888">${n.date}</small></span>
-            <button onclick="deleteNotice(${state.notices.length - 1 - i})" style="color:red; border:none; background:none; cursor:pointer">Xoá</button>
-        </div>
-    `).join('') || 'Chưa có thông báo.';
-}
-
-async function deleteNotice(index) {
-    const noticeToDelete = state.notices[index];
-    if (confirm(`Bạn chắc chắn muốn xoá thông báo: "${noticeToDelete.title}"?`)) {
-        try {
-            // Gửi yêu cầu xoá lên Google Sheets
-            await fetch(DB_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: "delete",
-                    title: noticeToDelete.title
-                })
-            });
-
-            // Cập nhật lại giao diện ngay lập tức
-            state.notices.splice(index, 1);
-            renderAdminNotices();
-            alert("Đã xoá thành công trên hệ thống!");
-        } catch (e) {
-            alert("Lỗi khi xoá: " + e.message);
-        }
-    }
+    });
+    document.getElementById('fileNameDisplay').textContent = `Đã chọn ${files.length} tệp`;
 }
 
 async function publishNotice() {
-    const title = document.getElementById('noticeTitle').value.trim();
-    const content = document.getElementById('noticeContent').value.trim();
-    const status = document.getElementById('sendStatus');
+    const title = document.getElementById('noticeTitle').value;
+    const content = document.getElementById('noticeContent').value;
     const btn = document.getElementById('sendBtn');
-
-    if (!title || !content) return alert("Vui lòng điền đủ thông tin");
-
+    
+    if(!title || !content) return alert("Vui lòng nhập đủ thông tin!");
+    
     btn.disabled = true;
-    status.style.display = 'block';
-    status.textContent = "⏳ Đang gửi...";
-
     const payload = {
         title: title,
-        content: content,
+        content: `[Team: ${state.currentUser}] \n` + content,
         date: new Date().toLocaleString('vi-VN'),
         files: selectedFiles.map(f => ({ name: f.Name, data: f.fullData }))
     };
 
     try {
-        // 1. Gửi lên Google Sheets (Để lưu trữ vĩnh viễn cho mọi người xem)
-        await fetch(DB_URL, {
-            method: 'POST',
-            body: JSON.stringify(payload)
-        });
-
-        // 2. Gửi qua Power Automate (Để thông báo Email/Teams)
-        if (WEBHOOK_URL) {
+        await fetch(DB_URL, { method: 'POST', body: JSON.stringify(payload) });
+        if(WEBHOOK_URL) {
             await fetch(WEBHOOK_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -327,34 +244,44 @@ async function publishNotice() {
                 })
             });
         }
-        
         state.notices.push(payload);
-        status.textContent = "✅ Thành công!";
-        setTimeout(() => {
-            status.style.display = 'none';
-            btn.disabled = false;
-            clearForm();
-            showPage('public');
-        }, 1500);
-    } catch(e) {
-        status.textContent = "❌ Lỗi: " + e.message;
-        btn.disabled = false;
-    }
+        alert("Đăng thành công!");
+        location.reload();
+    } catch(e) { alert("Lỗi gửi tin!"); btn.disabled = false; }
 }
 
-function clearForm() {
-    document.getElementById('noticeTitle').value = "";
-    document.getElementById('noticeContent').value = "";
-    document.getElementById('noticeFile').value = "";
-    document.getElementById('fileNameDisplay').textContent = "Chưa có tệp nào";
-    document.getElementById('previewImgContainer').innerHTML = "";
-    selectedFiles = [];
+function renderPublic() {
+    const grid = document.getElementById('noticeGrid');
+    document.getElementById('publicSubtitle').textContent = state.notices.length + " thông báo";
+    grid.innerHTML = state.notices.slice().reverse().map(n => `
+        <div class="notice-card">
+            <div class="notice-title">${n.title}</div>
+            <div class="notice-body">${n.content.replace(/\n/g, '<br>')}</div>
+            <div class="notice-footer">📅 ${n.date}</div>
+        </div>
+    `).join('');
 }
 
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+function renderAdminNotices() {
+    const list = document.getElementById('adminNoticeList');
+    list.innerHTML = state.notices.slice().reverse().map((n, i) => `
+        <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee">
+            <span>${n.title}</span>
+            <button onclick="deleteNotice(${state.notices.length - 1 - i})" style="color:red; cursor:pointer; border:none; background:none;">Xóa</button>
+        </div>
+    `).join('');
+}
+
+async function deleteNotice(index) {
+    if(!confirm("Xóa thông báo này?")) return;
+    try {
+        await fetch(DB_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: "delete", title: state.notices[index].title })
+        });
+        state.notices.splice(index, 1);
+        renderAdminNotices();
+    } catch(e) { alert("Lỗi xóa!"); }
 }
 
 init();
