@@ -102,7 +102,7 @@
     <textarea id="noticeContent" placeholder="Nhập nội dung chi tiết tại đây..."></textarea>
     <label>Đính kèm hình ảnh/tài liệu</label>
     <div class="attach-zone">
-      <input type="file" id="noticeFile" style="display:none" onchange="handleFile(this)">
+     <input type="file" id="noticeFile" style="display:none" multiple onchange="handleFile(this)">
       <button type="button" onclick="document.getElementById('noticeFile').click()" style="padding:8px 16px; cursor:pointer">Chọn tệp</button>
       <p id="fileNameDisplay" style="font-size:12px; color:#888; margin-top:8px">Chưa có tệp nào</p>
       <img id="previewImg" src="">
