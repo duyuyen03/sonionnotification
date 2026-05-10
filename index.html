@@ -25,19 +25,48 @@
   
   /* HEADER */
   .site-header {
-    background: var(--primary); color: #fff;
-    padding: 0 2rem; display: flex; align-items: center; justify-content: space-between;
-    height: 64px; position: sticky; top: 0; z-index: 100;
-  }
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 1rem;
+  display: flex;
+  flex-wrap: wrap; /* Cho phép các phần tử tự xuống dòng khi hết chỗ */
+  align-items: center;
+  justify-content: space-between;
+  min-height: 64px; /* Dùng min-height thay vì height cố định */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 10px;
+}
   .company-logo {
-    height: 35px;
-    width: auto;
-    margin-right: 15px;
-    display: block;
+  height: 30px; /* Giảm một chút để vừa màn hình nhỏ */
+  width: auto;
+  margin-right: 10px;
+}
+  .site-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; /* Giảm nhẹ size chữ trên mobile */
+  display: flex;
+  align-items: center;
+  flex-shrink: 0; /* Không cho logo bị bóp nhỏ */
+}
+  .header-nav {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  flex-wrap: nowrap; /* Giữ các nút trên cùng một hàng */
+}
+
+/* Điều chỉnh riêng cho màn hình điện thoại cực nhỏ */
+@media (max-width: 480px) {
+  .logo-text {
+    display: none; /* Ẩn chữ "Thông Báo Nội Bộ" trên điện thoại để dành chỗ cho nút */
   }
-  .site-logo { font-family: 'Playfair Display', serif; font-size: 20px; display: flex; align-items: center; }
-  .header-nav { display: flex; gap: 8px; align-items: center; }
-  .nav-tab { padding: 6px 16px; border-radius: 20px; border: none; cursor: pointer; font-family: 'Be Vietnam Pro', sans-serif; font-size: 13px; font-weight: 500; transition: all 0.2s; background: transparent; color: rgba(255,255,255,0.6); }
+  .nav-tab {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
   .nav-tab.active, .nav-tab:hover { background: rgba(255,255,255,0.12); color: #fff; }
   .nav-tab.accent-tab { background: var(--accent); color: #fff; }
   .logout-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; margin-left: 10px; }
