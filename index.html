@@ -25,26 +25,29 @@
   
   /* HEADER */
   .site-header {
-  background: var(--primary);
-  color: #fff;
-  padding: 0 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* Đẩy Logo sang trái, Nav sang phải */
-  height: 64px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  background: var(--primary) !important;
+  color: #fff !important;
+  padding: 0 15px !important;
+  display: flex !important;
+  flex-direction: row !important; /* Luôn nằm trên một hàng */
+  align-items: center !important;
+  justify-content: space-between !important; /* Logo bên trái, Nav bên phải */
+  height: 64px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
 }
   .company-logo {
-  height: 32px; /* Điều chỉnh vừa vặn với header */
-  width: auto;
+  height: 30px !important;
+  width: auto !important;
 }
   .site-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex: 1 !important; /* Chiếm không gian bên trái */
 }
   .logo-text {
   font-family: 'Playfair Display', serif;
@@ -54,23 +57,22 @@
 }
 
 .header-nav {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin-left: auto; /* Đảm bảo cụm nút luôn nằm sát lề phải */
+  display: flex !important;
+  gap: 8px !important;
+  align-items: center !important;
+  justify-content: flex-end !important; /* Ép cụm nút sang sát lề phải */
+  flex: 1 !important; /* Chiếm không gian bên phải */
 }
 
-/* Tối ưu riêng cho điện thoại */
+/* ĐIỀU CHỈNH RIÊNG CHO ĐIỆN THOẠI */
 @media (max-width: 600px) {
   .logo-text {
-    display: none; /* Ẩn chữ để tránh đè lên nút trên màn hình nhỏ */
-  }
-  .site-header {
-    padding: 0 0.5rem;
+    display: none !important; /* Ẩn chữ "Thông Báo Nội Bộ" trên mobile để tránh chật chội */
   }
   .nav-tab {
-    padding: 6px 10px;
-    font-size: 12px;
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important; /* Không cho chữ trong nút bị xuống dòng */
   }
 }
   .nav-tab.active, .nav-tab:hover { background: rgba(255,255,255,0.12); color: #fff; }
