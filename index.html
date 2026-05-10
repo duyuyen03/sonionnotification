@@ -27,40 +27,46 @@
   .site-header {
   background: var(--primary);
   color: #fff;
-  padding: 10px 1rem;
+  padding: 0 1rem;
   display: flex;
-  flex-wrap: wrap; /* Cho phép các phần tử tự xuống dòng khi hết chỗ */
   align-items: center;
-  justify-content: space-between;
-  min-height: 64px; /* Dùng min-height thay vì height cố định */
+  justify-content: space-between; /* Đẩy Logo sang trái, Nav sang phải */
+  height: 64px;
   position: sticky;
   top: 0;
   z-index: 100;
-  gap: 10px;
 }
   .company-logo {
-  height: 30px; /* Giảm một chút để vừa màn hình nhỏ */
+  height: 32px; /* Điều chỉnh vừa vặn với header */
   width: auto;
-  margin-right: 10px;
 }
   .site-logo {
-  font-family: 'Playfair Display', serif;
-  font-size: 18px; /* Giảm nhẹ size chữ trên mobile */
   display: flex;
   align-items: center;
-  flex-shrink: 0; /* Không cho logo bị bóp nhỏ */
+  gap: 10px;
+  flex-shrink: 0;
 }
-  .header-nav {
-  display: flex;
-  gap: 5px;
-  align-items: center;
-  flex-wrap: nowrap; /* Giữ các nút trên cùng một hàng */
+  .logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
-/* Điều chỉnh riêng cho màn hình điện thoại cực nhỏ */
-@media (max-width: 480px) {
+.header-nav {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto; /* Đảm bảo cụm nút luôn nằm sát lề phải */
+}
+
+/* Tối ưu riêng cho điện thoại */
+@media (max-width: 600px) {
   .logo-text {
-    display: none; /* Ẩn chữ "Thông Báo Nội Bộ" trên điện thoại để dành chỗ cho nút */
+    display: none; /* Ẩn chữ để tránh đè lên nút trên màn hình nhỏ */
+  }
+  .site-header {
+    padding: 0 0.5rem;
   }
   .nav-tab {
     padding: 6px 10px;
