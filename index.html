@@ -45,7 +45,7 @@
   .notice-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow); }
   .notice-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
   .notice-body { font-size: 14px; color: #444; line-height: 1.7; }
-  .notice-attachment { margin-top: 15px; padding-top: 12px; border-top: 1px dashed var(--border); }
+  .notice-attachment { margin-top: 15px; padding-top: 12px; border-top: 1px dashed var(--border); display: flex; flex-wrap: wrap; gap: 10px; }
   .notice-footer { display: flex; align-items: center; gap: 16px; font-size: 12px; color: var(--text-muted); margin-top: 15px; }
   /* FORMS & ADMIN */
   .panel { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow); margin-bottom: 20px; }
@@ -56,15 +56,13 @@
   }
   textarea { min-height: 120px; resize: vertical; }
   .attach-zone { background: #fcfcfc; border: 2px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 16px; }
-  #previewImg { max-width: 100%; max-height: 200px; border-radius: 6px; margin-top: 10px; display: none; margin-inline: auto; }
+  #previewImgContainer { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 10px; }
+  .preview-thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
   .send-btn {
     width: 100%; padding: 14px; font-size: 15px; border-radius: 10px;
     background: var(--primary); color: #fff; border: none; cursor: pointer; font-weight: 600;
   }
   .send-btn:disabled { opacity: 0.5; }
-  /* LOGIN */
-  .login-wrap { min-height: 60vh; display: flex; align-items: center; justify-content: center; }
-  .login-card { background: var(--surface); border-radius: 20px; padding: 2.5rem; border: 1px solid var(--border); box-shadow: var(--shadow); width: 100%; max-width: 400px; }
 </style>
 </head>
 <body>
@@ -75,11 +73,13 @@
     <button class="nav-tab accent-tab" id="tab-login" onclick="showPage('login')">🔐 Admin</button>
   </div>
 </header>
+
 <div class="page active" id="page-public">
   <h1 class="page-title">Thông báo</h1>
   <p class="page-subtitle" id="publicSubtitle">Đang tải...</p>
   <div class="notice-grid" id="noticeGrid"></div>
 </div>
+
 <div class="page" id="page-login">
   <div class="login-wrap">
     <div class="login-card">
@@ -93,6 +93,7 @@
     </div>
   </div>
 </div>
+
 <div class="page" id="page-admin">
   <h1 class="page-title">Bảng điều khiển</h1>
   <div class="panel">
@@ -100,12 +101,12 @@
     <input type="text" id="noticeTitle" placeholder="VD: Thông báo lịch trực tết...">
     <label>Nội dung</label>
     <textarea id="noticeContent" placeholder="Nhập nội dung chi tiết tại đây..."></textarea>
-    <label>Đính kèm hình ảnh/tài liệu</label>
+    <label>Đính kèm hình ảnh/tài liệu (Chọn được nhiều tệp)</label>
     <div class="attach-zone">
-     <input type="file" id="noticeFile" style="display:none" multiple onchange="handleFile(this)">
+      <input type="file" id="noticeFile" style="display:none" multiple onchange="handleFile(this)">
       <button type="button" onclick="document.getElementById('noticeFile').click()" style="padding:8px 16px; cursor:pointer">Chọn tệp</button>
       <p id="fileNameDisplay" style="font-size:12px; color:#888; margin-top:8px">Chưa có tệp nào</p>
-      <img id="previewImg" src="">
+      <div id="previewImgContainer"></div>
     </div>
     <button class="send-btn" id="sendBtn" onclick="publishNotice()">Đăng & Gửi Power Automate</button>
     <div id="sendStatus" style="margin-top:10px; font-size:13px; display:none"></div>
@@ -117,15 +118,13 @@
 </div>
 
 <script>
-// --- CẤU HÌNH ---
 const ADMIN_USER = 'admin';
 const ADMIN_PASS = 'admin1234';
 const WEBHOOK_URL = 'https://defaultaf1f375339254e6f949b97c0073208.03.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/9f15bac38c2640b185716127e7c0ff44/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Bxa82ctx9WzqmiTinfUvl5OuwFHkDyX-LhfbnPq70bs';
 
 let state = { notices: [] };
-let currentFile = { Name: "", ContentBytes: "", type: "", fullData: "" };
+let selectedFiles = []; // Mảng lưu trữ nhiều file
 
-// --- KHỞI TẠO ---
 function init() {
     try {
         const saved = localStorage.getItem('intranet_v3');
@@ -134,50 +133,56 @@ function init() {
     renderPublic();
 }
 
-// --- ĐIỀU HƯỚNG ---
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
     document.getElementById('page-' + pageId).classList.add('active');
-    if(document.getElementById('tab-' + pageId)) {
-        document.getElementById('tab-' + pageId).classList.add('active');
-    }
+    if(document.getElementById('tab-' + pageId)) document.getElementById('tab-' + pageId).classList.add('active');
     if (pageId === 'public') renderPublic();
     if (pageId === 'admin') renderAdminNotices();
 }
 
-// --- XỬ LÝ FILE (BẢN CHUẨN) ---
-function handleFile(input) {
-    const file = input.files[0];
+// --- XỬ LÝ NHIỀU FILE (ASYNCHRONOUS) ---
+async function handleFile(input) {
+    const files = Array.from(input.files);
     const display = document.getElementById('fileNameDisplay');
-    const preview = document.getElementById('previewImg');
+    const container = document.getElementById('previewImgContainer');
+    
+    selectedFiles = [];
+    container.innerHTML = "";
 
-    if (file) {
-        display.textContent = "Đã chọn: " + file.name;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            // Tách bỏ phần 'data:image/jpeg;base64,' chỉ lấy chuỗi sau dấu phẩy
-            const base64Content = e.target.result.split(',')[1];
-            
-            currentFile = {
-                Name: file.name,
-                ContentBytes: base64Content, // Đây là chuỗi sạch gửi đi
-                type: file.type,
-                fullData: e.target.result // Dùng để hiện lên giao diện web
-            };
+    if (files.length > 0) {
+        display.textContent = `Đã chọn ${files.length} tệp`;
+        
+        const filePromises = files.map(file => {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    resolve({
+                        Name: file.name,
+                        ContentBytes: e.target.result.split(',')[1],
+                        type: file.type,
+                        fullData: e.target.result
+                    });
+                };
+                reader.readAsDataURL(file);
+            });
+        });
 
-            if (file.type.startsWith('image/')) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            } else {
-                preview.style.display = 'none';
+        selectedFiles = await Promise.all(filePromises);
+
+        // Hiển thị preview cho các file là ảnh
+        selectedFiles.forEach(f => {
+            if (f.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.src = f.fullData;
+                img.className = 'preview-thumb';
+                container.appendChild(img);
             }
-        };
-        reader.readAsDataURL(file);
+        });
     }
 }
 
-// --- ĐĂNG NHẬP ---
 function doLogin() {
     const u = document.getElementById('loginUser').value;
     const p = document.getElementById('loginPass').value;
@@ -200,7 +205,6 @@ function doLogin() {
     }
 }
 
-// --- HIỂN THỊ TIN TỨC ---
 function renderPublic() {
     const grid = document.getElementById('noticeGrid');
     document.getElementById('publicSubtitle').textContent = state.notices.length + " thông báo đang hiển thị";
@@ -209,19 +213,23 @@ function renderPublic() {
         return;
     }
     grid.innerHTML = state.notices.slice().reverse().map(n => {
-        let attachment = "";
-        if (n.fileData) {
-            if (n.fileData.startsWith('data:image/')) {
-                attachment = `<div class="notice-attachment"><img src="${n.fileData}" style="max-width:100%; border-radius:8px"></div>`;
-            } else {
-                attachment = `<div class="notice-attachment"><a href="${n.fileData}" download="${n.fileName}" style="color:var(--accent); text-decoration:none; font-weight:600">📎 Tải tập tin: ${n.fileName}</a></div>`;
-            }
+        let attachmentsHTML = "";
+        if (n.files && n.files.length > 0) {
+            attachmentsHTML = '<div class="notice-attachment">';
+            n.files.forEach(f => {
+                if (f.data.startsWith('data:image/')) {
+                    attachmentsHTML += `<img src="${f.data}" style="max-width:200px; border-radius:8px; border:1px solid #eee">`;
+                } else {
+                    attachmentsHTML += `<a href="${f.data}" download="${f.name}" style="color:var(--accent); text-decoration:none; font-size:12px; font-weight:600; border:1px solid #eee; padding:5px 10px; border-radius:4px">📎 ${f.name}</a>`;
+                }
+            });
+            attachmentsHTML += '</div>';
         }
         return `
             <div class="notice-card">
                 <div class="notice-title">${escapeHtml(n.title)}</div>
                 <div class="notice-body">${escapeHtml(n.content).replace(/\n/g, '<br>')}</div>
-                ${attachment}
+                ${attachmentsHTML}
                 <div class="notice-footer"><span>📅 ${n.date}</span></div>
             </div>
         `;
@@ -246,7 +254,6 @@ function deleteNotice(index) {
     }
 }
 
-// --- ĐĂNG BÀI ---
 async function publishNotice() {
     const title = document.getElementById('noticeTitle').value.trim();
     const content = document.getElementById('noticeContent').value.trim();
@@ -263,10 +270,10 @@ async function publishNotice() {
         title: title,
         content: content,
         date: new Date().toLocaleString('vi-VN'),
-        attachments: currentFile.ContentBytes ? [{
-            Name: currentFile.Name,
-            ContentBytes: currentFile.ContentBytes
-        }] : []
+        attachments: selectedFiles.map(f => ({
+            Name: f.Name,
+            ContentBytes: f.ContentBytes
+        }))
     };
 
     try {
@@ -278,13 +285,11 @@ async function publishNotice() {
             });
         }
         
-        // Lưu để hiển thị trên web
         state.notices.push({
             title: payload.title,
             content: payload.content,
             date: payload.date,
-            fileName: currentFile.Name,
-            fileData: currentFile.fullData
+            files: selectedFiles.map(f => ({ name: f.Name, data: f.fullData }))
         });
         localStorage.setItem('intranet_v3', JSON.stringify(state));
         
@@ -306,8 +311,8 @@ function clearForm() {
     document.getElementById('noticeContent').value = "";
     document.getElementById('noticeFile').value = "";
     document.getElementById('fileNameDisplay').textContent = "Chưa có tệp nào";
-    document.getElementById('previewImg').style.display = 'none';
-    currentFile = { Name: "", ContentBytes: "", type: "", fullData: "" };
+    document.getElementById('previewImgContainer').innerHTML = "";
+    selectedFiles = [];
 }
 
 function escapeHtml(text) {
