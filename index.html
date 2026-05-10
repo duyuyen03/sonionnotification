@@ -300,7 +300,6 @@ function renderAdminNotices() {
         return;
     }
 
-    // Hiển thị giao diện thẻ giống hệt trang chủ nhưng có thêm nút Xóa
     list.innerHTML = state.notices.slice().reverse().map((n, i) => {
         const actualIndex = state.notices.length - 1 - i;
         
@@ -309,23 +308,27 @@ function renderAdminNotices() {
             attachmentsHTML = '<div class="notice-attachment" style="margin-top:10px; border-top: 1px dashed #eee; padding-top:10px;">';
             n.files.forEach(f => {
                 if (f.data && f.data.startsWith('data:image/')) {
-                    attachmentsHTML += `<img src="${f.data}" style="height:60px; width:60px; object-fit:cover; border-radius:4px; margin-right:8px; border:1px solid #ddd;">`;
+                    // Đã thêm onclick="openFullImage()" và cursor:pointer bên dưới
+                    attachmentsHTML += `<img src="${f.data}" 
+                                         onclick="openFullImage('${f.data}')" 
+                                         style="height:60px; width:60px; object-fit:cover; border-radius:4px; margin-right:8px; border:1px solid #ddd; cursor:pointer;" 
+                                         title="Xem ảnh lớn">`;
                 } else if (f.data) {
-                    attachmentsHTML += `<span style="font-size:11px; color:#666; background:#f0f0f0; padding:2px 6px; border-radius:4px; margin-right:5px;">📎 ${f.name.view(0,15)}...</span>`;
+                    attachmentsHTML += `<a href="${f.data}" download="${f.name}" style="font-size:11px; color:#666; background:#f0f0f0; padding:2px 6px; border-radius:4px; margin-right:5px; text-decoration:none;">📎 ${f.name.substring(0,10)}...</a>`;
                 }
             });
             attachmentsHTML += '</div>';
         }
 
         return `
-            <div class="notice-card" style="margin-bottom:15px; position:relative; padding: 1rem; border: 1px solid var(--border); border-radius: 8px;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                    <div class="notice-title" style="font-size:16px; margin-bottom:5px;">${n.title}</div>
+            <div class="notice-card" style="margin-bottom:15px; position:relative; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; background: #fff;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                    <div class="notice-title" style="font-size:16px; font-weight:700; color:var(--primary);">${n.title}</div>
                     <button onclick="deleteNotice(${actualIndex})" style="color:var(--danger); background:none; border:1px solid var(--danger); padding:2px 8px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:600;">Xóa</button>
                 </div>
-                <div class="notice-body" style="font-size:13px; color:#555;">${n.content.replace(/\n/g, '<br>')}</div>
+                <div class="notice-body" style="font-size:13px; color:#444; line-height:1.5;">${n.content.replace(/\n/g, '<br>')}</div>
                 ${attachmentsHTML}
-                <div class="notice-footer" style="margin-top:10px; font-size:11px;">📅 ${n.date}</div>
+                <div class="notice-footer" style="margin-top:12px; font-size:11px; color:#888;">📅 ${n.date}</div>
             </div>
         `;
     }).join('');
