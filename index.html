@@ -55,7 +55,6 @@
     font-family: inherit; font-size: 14px; background: var(--surface2); margin-bottom: 16px; outline: none;
   }
   textarea { min-height: 120px; resize: vertical; }
-  
   .attach-zone { background: #fcfcfc; border: 2px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 16px; }
   #previewImg { max-width: 100%; max-height: 200px; border-radius: 6px; margin-top: 10px; display: none; margin-inline: auto; }
   .send-btn {
@@ -76,13 +75,11 @@
     <button class="nav-tab accent-tab" id="tab-login" onclick="showPage('login')">🔐 Admin</button>
   </div>
 </header>
-<!-- PUBLIC PAGE -->
 <div class="page active" id="page-public">
   <h1 class="page-title">Thông báo</h1>
   <p class="page-subtitle" id="publicSubtitle">Đang tải...</p>
   <div class="notice-grid" id="noticeGrid"></div>
 </div>
-<!-- LOGIN PAGE -->
 <div class="page" id="page-login">
   <div class="login-wrap">
     <div class="login-card">
@@ -96,13 +93,11 @@
     </div>
   </div>
 </div>
-<!-- ADMIN PAGE -->
 <div class="page" id="page-admin">
   <h1 class="page-title">Bảng điều khiển</h1>
   <div class="panel">
     <label>Tiêu đề thông báo</label>
     <input type="text" id="noticeTitle" placeholder="VD: Thông báo lịch trực tết...">
-    
     <label>Nội dung</label>
     <textarea id="noticeContent" placeholder="Nhập nội dung chi tiết tại đây..."></textarea>
     <label>Đính kèm hình ảnh/tài liệu</label>
@@ -120,14 +115,16 @@
     <div id="adminNoticeList" style="margin-top:15px"></div>
   </div>
 </div>
+
 <script>
 // --- CẤU HÌNH ---
 const ADMIN_USER = 'admin';
 const ADMIN_PASS = 'admin1234';
-const WEBHOOK_URL = 'https://defaultaf1f375339254e6f949b97c0073208.03.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/9f15bac38c2640b185716127e7c0ff44/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Bxa82ctx9WzqmiTinfUvl5OuwFHkDyX-LhfbnPq70bs'; // DÁN URL POWER AUTOMATE VÀO ĐÂY
+const WEBHOOK_URL = 'https://defaultaf1f375339254e6f949b97c0073208.03.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/9f15bac38c2640b185716127e7c0ff44/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Bxa82ctx9WzqmiTinfUvl5OuwFHkDyX-LhfbnPq70bs';
+
 let state = { notices: [] };
-let currentFileData = null;
-let currentFileName = "";
+let currentFile = { Name: "", ContentBytes: "", type: "", fullData: "" };
+
 // --- KHỞI TẠO ---
 function init() {
     try {
@@ -136,11 +133,11 @@ function init() {
     } catch(e) { console.error("Lỗi tải dữ liệu", e); }
     renderPublic();
 }
+
 // --- ĐIỀU HƯỚNG ---
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    
     document.getElementById('page-' + pageId).classList.add('active');
     if(document.getElementById('tab-' + pageId)) {
         document.getElementById('tab-' + pageId).classList.add('active');
@@ -148,21 +145,25 @@ function showPage(pageId) {
     if (pageId === 'public') renderPublic();
     if (pageId === 'admin') renderAdminNotices();
 }
+
 // --- XỬ LÝ FILE ---
 function handleFile(input) {
     const file = input.files[0];
     const display = document.getElementById('fileNameDisplay');
     const preview = document.getElementById('previewImg');
-    
+
     if (file) {
-        currentFileName = file.name;
         display.textContent = "Đã chọn: " + file.name;
-        
         const reader = new FileReader();
         reader.onload = function(e) {
-            currentFileData = e.target.result;
+            currentFile = {
+                Name: file.name,
+                ContentBytes: e.target.result.split(',')[1],
+                type: file.type,
+                fullData: e.target.result
+            };
             if (file.type.startsWith('image/')) {
-                preview.src = currentFileData;
+                preview.src = e.target.result;
                 preview.style.display = 'block';
             } else {
                 preview.style.display = 'none';
@@ -171,20 +172,16 @@ function handleFile(input) {
         reader.readAsDataURL(file);
     }
 }
+
 // --- ĐĂNG NHẬP ---
 function doLogin() {
     const u = document.getElementById('loginUser').value;
     const p = document.getElementById('loginPass').value;
-    
     if (u === ADMIN_USER && p === ADMIN_PASS) {
         document.getElementById('loginErr').style.display = 'none';
-        
-        // Cập nhật nút Admin thành nút vào thẳng bảng điều khiển
         const adminBtn = document.getElementById('tab-login');
         adminBtn.innerHTML = "⚙️ Quản lý";
         adminBtn.onclick = () => showPage('admin');
-        
-        // Thêm nút đăng xuất nếu chưa có
         if (!document.getElementById('logoutBtn')) {
             const logoutBtn = document.createElement('button');
             logoutBtn.id = 'logoutBtn';
@@ -193,17 +190,16 @@ function doLogin() {
             logoutBtn.onclick = () => location.reload();
             document.getElementById('headerNav').appendChild(logoutBtn);
         }
-        
         showPage('admin');
     } else {
         document.getElementById('loginErr').style.display = 'block';
     }
 }
+
 // --- HIỂN THỊ TIN TỨC ---
 function renderPublic() {
     const grid = document.getElementById('noticeGrid');
     document.getElementById('publicSubtitle').textContent = state.notices.length + " thông báo đang hiển thị";
-    
     if (state.notices.length === 0) {
         grid.innerHTML = '<p style="text-align:center; padding:40px; color:#999">Chưa có thông báo nào.</p>';
         return;
@@ -227,6 +223,7 @@ function renderPublic() {
         `;
     }).join('');
 }
+
 function renderAdminNotices() {
     const list = document.getElementById('adminNoticeList');
     list.innerHTML = state.notices.slice().reverse().map((n, i) => `
@@ -236,6 +233,7 @@ function renderAdminNotices() {
         </div>
     `).join('') || 'Chưa có thông báo.';
 }
+
 function deleteNotice(index) {
     if (confirm('Bạn chắc chắn muốn xoá?')) {
         state.notices.splice(index, 1);
@@ -243,24 +241,31 @@ function deleteNotice(index) {
         renderAdminNotices();
     }
 }
+
 // --- ĐĂNG BÀI ---
 async function publishNotice() {
     const title = document.getElementById('noticeTitle').value.trim();
     const content = document.getElementById('noticeContent').value.trim();
     const status = document.getElementById('sendStatus');
-    
+    const btn = document.getElementById('sendBtn');
+
     if (!title || !content) return alert("Vui lòng điền đủ thông tin");
+
+    btn.disabled = true;
+    status.style.display = 'block';
+    status.textContent = "⏳ Đang gửi...";
+
     const payload = {
-        title,
-        content,
+        title: title,
+        content: content,
         date: new Date().toLocaleString('vi-VN'),
-        fileName: currentFileName,
-        fileData: currentFileData
+        attachments: currentFile.ContentBytes ? [{
+            Name: currentFile.Name,
+            ContentBytes: currentFile.ContentBytes
+        }] : []
     };
+
     try {
-        status.style.display = 'block';
-        status.textContent = "⏳ Đang gửi...";
-        
         if (WEBHOOK_URL) {
             await fetch(WEBHOOK_URL, {
                 method: 'POST',
@@ -268,34 +273,45 @@ async function publishNotice() {
                 body: JSON.stringify(payload)
             });
         }
-        state.notices.push(payload);
+        
+        // Lưu để hiển thị trên web
+        state.notices.push({
+            title: payload.title,
+            content: payload.content,
+            date: payload.date,
+            fileName: currentFile.Name,
+            fileData: currentFile.fullData
+        });
         localStorage.setItem('intranet_v3', JSON.stringify(state));
         
         status.textContent = "✅ Thành công!";
         setTimeout(() => {
             status.style.display = 'none';
+            btn.disabled = false;
             clearForm();
             showPage('public');
         }, 1500);
     } catch(e) {
         status.textContent = "❌ Lỗi: " + e.message;
+        btn.disabled = false;
     }
 }
+
 function clearForm() {
     document.getElementById('noticeTitle').value = "";
     document.getElementById('noticeContent').value = "";
     document.getElementById('noticeFile').value = "";
     document.getElementById('fileNameDisplay').textContent = "Chưa có tệp nào";
     document.getElementById('previewImg').style.display = 'none';
-    currentFileData = null;
-    currentFileName = "";
+    currentFile = { Name: "", ContentBytes: "", type: "", fullData: "" };
 }
+
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
-// Khởi động
+
 init();
 </script>
 </body>
