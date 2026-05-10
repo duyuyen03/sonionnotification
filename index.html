@@ -294,12 +294,41 @@ function openFullImage(base64Data) {
 
 function renderAdminNotices() {
     const list = document.getElementById('adminNoticeList');
-    list.innerHTML = state.notices.slice().reverse().map((n, i) => `
-        <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee">
-            <span>${n.title}</span>
-            <button onclick="deleteNotice(${state.notices.length - 1 - i})" style="color:red; cursor:pointer; border:none; background:none;">Xóa</button>
-        </div>
-    `).join('');
+    
+    if (state.notices.length === 0) {
+        list.innerHTML = '<p style="text-align:center; padding:20px; color:#999">Chưa có lịch sử thông báo.</p>';
+        return;
+    }
+
+    // Hiển thị giao diện thẻ giống hệt trang chủ nhưng có thêm nút Xóa
+    list.innerHTML = state.notices.slice().reverse().map((n, i) => {
+        const actualIndex = state.notices.length - 1 - i;
+        
+        let attachmentsHTML = "";
+        if (n.files && n.files.length > 0) {
+            attachmentsHTML = '<div class="notice-attachment" style="margin-top:10px; border-top: 1px dashed #eee; padding-top:10px;">';
+            n.files.forEach(f => {
+                if (f.data && f.data.startsWith('data:image/')) {
+                    attachmentsHTML += `<img src="${f.data}" style="height:60px; width:60px; object-fit:cover; border-radius:4px; margin-right:8px; border:1px solid #ddd;">`;
+                } else if (f.data) {
+                    attachmentsHTML += `<span style="font-size:11px; color:#666; background:#f0f0f0; padding:2px 6px; border-radius:4px; margin-right:5px;">📎 ${f.name.view(0,15)}...</span>`;
+                }
+            });
+            attachmentsHTML += '</div>';
+        }
+
+        return `
+            <div class="notice-card" style="margin-bottom:15px; position:relative; padding: 1rem; border: 1px solid var(--border); border-radius: 8px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div class="notice-title" style="font-size:16px; margin-bottom:5px;">${n.title}</div>
+                    <button onclick="deleteNotice(${actualIndex})" style="color:var(--danger); background:none; border:1px solid var(--danger); padding:2px 8px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:600;">Xóa</button>
+                </div>
+                <div class="notice-body" style="font-size:13px; color:#555;">${n.content.replace(/\n/g, '<br>')}</div>
+                ${attachmentsHTML}
+                <div class="notice-footer" style="margin-top:10px; font-size:11px;">📅 ${n.date}</div>
+            </div>
+        `;
+    }).join('');
 }
 
 async function deleteNotice(index) {
