@@ -146,22 +146,34 @@ function showPage(pageId) {
     if (pageId === 'admin') renderAdminNotices();
 }
 
-// --- XỬ LÝ FILE ---
+// --- XỬ LÝ FILE (BẢN CẬP NHẬT) ---
 function handleFile(input) {
     const file = input.files[0];
     const display = document.getElementById('fileNameDisplay');
     const preview = document.getElementById('previewImg');
 
     if (file) {
+        // Kiểm tra kích thước file (Tùy chọn: giới hạn 2MB để tránh lỗi request quá lớn)
+        if (file.size > 2 * 1024 * 1024) {
+            alert("File quá lớn, vui lòng chọn file dưới 2MB");
+            input.value = "";
+            return;
+        }
+
         display.textContent = "Đã chọn: " + file.name;
         const reader = new FileReader();
+        
         reader.onload = function(e) {
+            // Lấy chuỗi Base64 sau dấu phẩy
+            const base64Clean = e.target.result.split(',')[1];
+            
             currentFile = {
                 Name: file.name,
-                ContentBytes: e.target.result.split(',')[1],
+                ContentBytes: base64Clean, // Dữ liệu sạch để gửi Email
                 type: file.type,
-                fullData: e.target.result
+                fullData: e.target.result // Dữ liệu có header để hiện lên Web
             };
+
             if (file.type.startsWith('image/')) {
                 preview.src = e.target.result;
                 preview.style.display = 'block';
@@ -169,6 +181,12 @@ function handleFile(input) {
                 preview.style.display = 'none';
             }
         };
+        
+        reader.onerror = function() {
+            console.error("Lỗi khi đọc file");
+            alert("Không thể đọc file này");
+        };
+
         reader.readAsDataURL(file);
     }
 }
