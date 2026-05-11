@@ -143,9 +143,9 @@
   <h1 class="page-title">Bảng điều khiển</h1>
   <div class="panel">
     <label>Tiêu đề thông báo</label>
-    <input type="text" id="noticeTitle" placeholder="VD: Thông báo lịch trực tết...">
+    <input type="text" id="noticeTitle" placeholder="">
     <label>Nội dung</label>
-    <textarea id="noticeContent" style="min-height:120px; width:100%; border-radius:8px; border:1px solid var(--border); padding:10px;" placeholder="Nhập nội dung..."></textarea>
+    <textarea id="noticeContent" style="min-height:120px; width:100%; border-radius:8px; border:1px solid var(--border); padding:10px;" placeholder=""></textarea>
     <label>Đính kèm tài liệu</label>
     <div class="attach-zone">
       <input type="file" id="noticeFile" style="display:none" multiple onchange="handleFile(this)">
@@ -153,7 +153,7 @@
       <p id="fileNameDisplay" style="font-size:12px; color:#888; margin-top:8px">Chưa có tệp nào</p>
       <div id="previewImgContainer"></div>
     </div>
-    <button class="send-btn" id="sendBtn" onclick="publishNotice()">Đăng & Gửi Power Automate</button>
+    <button class="send-btn" id="sendBtn" onclick="publishNotice()">Đăng thông báo</button>
     <div id="sendStatus" style="margin-top:10px; font-size:13px; display:none"></div>
   </div>
   <div class="panel">
