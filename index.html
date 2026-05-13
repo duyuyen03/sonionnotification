@@ -202,27 +202,26 @@ function init() {
 }
 
 function showPage(pageId) {
-    // 1. Ẩn tất cả các trang và bỏ trạng thái active
-    document.querySelectorAll('.page').forEach(p => {
+    // 1. Ẩn tất cả các trang bằng cách ép kiểu display
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(p => {
+        p.style.setProperty('display', 'none', 'important');
         p.classList.remove('active');
-        p.style.display = 'none'; // Đảm bảo ẩn đi
     });
 
-    // 2. Bỏ active ở các tab menu
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-
-    // 3. Hiển thị trang được chọn
+    // 2. Hiện trang được chọn
     const targetPage = document.getElementById('page-' + pageId);
     if (targetPage) {
+        targetPage.style.setProperty('display', 'block', 'important');
         targetPage.classList.add('active');
-        targetPage.style.display = 'block'; // Hiện trang lên
     }
 
-    // 4. Active cái tab tương ứng trên menu
-    const tab = document.getElementById('tab-' + pageId);
-    if (tab) tab.classList.add('active');
+    // 3. Cập nhật trạng thái nút bấm (Tab)
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    const activeTab = document.getElementById('tab-' + pageId);
+    if (activeTab) activeTab.classList.add('active');
 
-    // 5. Chạy hàm vẽ dữ liệu
+    // 4. Load dữ liệu tương ứng
     if (pageId === 'public') renderPublic();
     if (pageId === 'admin') renderAdminNotices();
 }
