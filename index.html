@@ -21,7 +21,7 @@
     --shadow: 0 4px 24px rgba(26,26,46,0.08);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--surface2); color: var(--text); min-height: 100vh; }
+  body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--surface2); color: var(--text); min-height: 100vh; scroll-behavior: smooth; }
   
   /* HEADER */
   .site-header {
@@ -53,13 +53,13 @@
   .logout-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; margin-left: 10px; }
 
   /* LAYOUT CHÍNH */
-  .main-container { display: flex; gap: 24px; max-width: 1100px; margin: 0 auto; padding: 2rem; }
+  .main-container { display: flex; gap: 24px; max-width: 1100px; margin: 0 auto; padding: 2rem; align-items: flex-start; }
   .notice-column { flex: 3; }
-  .sidebar-column { flex: 1; }
+  .sidebar-column { flex: 1; position: sticky; top: 84px; }
 
   @media (max-width: 900px) {
     .main-container { flex-direction: column; padding: 1rem; }
-    .sidebar-column { order: -1; } /* Tin ghim hiện lên trước trên mobile */
+    .sidebar-column { position: static; width: 100%; order: -1; } 
   }
 
   /* PAGES */
@@ -70,16 +70,21 @@
   .page-subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 1.5rem; }
 
   /* SIDEBAR TIN GHIM */
-  .sidebar-panel { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.2rem; box-shadow: var(--shadow); position: sticky; top: 84px; }
+  .sidebar-panel { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.2rem; box-shadow: var(--shadow); max-height: 80vh; overflow-y: auto; }
   .sidebar-title { font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .pinned-item { padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+  
+  .pinned-item { padding: 12px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: 0.2s; }
+  .pinned-item:hover { background: #fdfdfd; }
   .pinned-item:last-child { border: 0; }
-  .pinned-link { text-decoration: none; color: var(--primary); font-size: 14px; font-weight: 500; display: block; margin-bottom: 4px; }
+  
+  .pinned-link { color: var(--primary); font-size: 14px; font-weight: 600; margin-bottom: 4px; display: block; }
+  .pinned-excerpt { font-size: 12px; color: #666; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 6px; line-height: 1.4; }
+  .pinned-thumb { width: 100%; height: 80px; object-fit: cover; border-radius: 6px; margin-bottom: 6px; border: 1px solid #eee; }
   .pinned-date { font-size: 11px; color: var(--text-muted); }
 
   /* NOTICE CARD */
   .notice-grid { display: grid; gap: 16px; }
-  .notice-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow); position: relative; }
+  .notice-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow); position: relative; transition: 0.3s; }
   .notice-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
   .notice-title { font-size: 18px; font-weight: 700; color: var(--primary); }
   .pin-badge { font-size: 10px; background: #fff3cd; color: #856404; padding: 2px 8px; border-radius: 10px; font-weight: 700; border: 1px solid #ffeeba; }
@@ -155,7 +160,6 @@
       <label>Nội dung</label>
       <textarea id="noticeContent" style="min-height:120px; width:100%; border-radius:8px; border:1px solid var(--border); padding:10px;" placeholder="Nhập nội dung..."></textarea>
       
-      <!-- Checkbox Ghim -->
       <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
         <input type="checkbox" id="isPinnedCheck" style="width: 18px; height: 18px; cursor: pointer;">
         <label for="isPinnedCheck" style="margin-bottom: 0; cursor: pointer; color: var(--accent);">Ghim thông báo này vào thanh bên</label>
@@ -209,14 +213,12 @@ async function doLogin() {
     const u = document.getElementById('loginUser').value;
     const p = document.getElementById('loginPass').value;
     const err = document.getElementById('loginErr');
-
     try {
         const response = await fetch(DB_URL, {
             method: 'POST',
             body: JSON.stringify({ action: "check_login", username: u, password: p })
         });
         const result = await response.json();
-
         if (result.success) {
             err.style.display = 'none';
             state.currentUser = u;
@@ -224,7 +226,6 @@ async function doLogin() {
             const adminBtn = document.getElementById('tab-login');
             adminBtn.innerHTML = "⚙️ Quản lý";
             adminBtn.onclick = () => showPage('admin');
-            
             if (!document.getElementById('logoutBtn')) {
                 const logoutBtn = document.createElement('button');
                 logoutBtn.className = 'logout-btn';
@@ -261,7 +262,6 @@ async function handleFile(input) {
         if (f.type.startsWith('image/')) {
             const img = document.createElement('img');
             img.src = f.fullData;
-            img.className = 'preview-thumb';
             img.style = "width:80px; height:80px; object-fit:cover; border-radius:6px; margin:5px;";
             container.appendChild(img);
         }
@@ -274,18 +274,15 @@ async function publishNotice() {
     const content = document.getElementById('noticeContent').value;
     const isPinned = document.getElementById('isPinnedCheck').checked;
     const btn = document.getElementById('sendBtn');
-    
     if(!title || !content) return alert("Vui lòng nhập đủ thông tin!");
-    
     btn.disabled = true;
     const payload = {
         title: title,
         content: `[Team: ${state.currentTeam}] \n` + content,
         date: new Date().toLocaleString('vi-VN'),
         files: selectedFiles.map(f => ({ name: f.Name, data: f.fullData })),
-        isPinned: isPinned // Gửi trạng thái ghim lên Server
+        isPinned: isPinned
     };
-
     try {
         await fetch(DB_URL, { method: 'POST', body: JSON.stringify(payload) });
         if(WEBHOOK_URL) {
@@ -310,22 +307,39 @@ function renderPublic() {
     const pinnedList = document.getElementById('pinnedList');
     document.getElementById('publicSubtitle').textContent = state.notices.length + " thông báo";
     
-    // Render Tin Ghim (Sidebar)
+    // 1. Render Tin Ghim (Sidebar) với nội dung và ảnh
     const pins = state.notices.filter(n => n.isPinned);
-    pinnedList.innerHTML = pins.length > 0 ? pins.slice().reverse().map(n => `
-        <div class="pinned-item">
-            <div class="pinned-link">${n.title}</div>
-            <div class="pinned-date">${n.date}</div>
-        </div>
-    `).join('') : '<p style="color:#999; font-size:13px">Không có tin ghim.</p>';
+    pinnedList.innerHTML = pins.length > 0 ? pins.slice().reverse().map(n => {
+        // Lấy ảnh đầu tiên nếu có để làm thumbnail
+        let thumbHTML = "";
+        if (n.files && n.files.length > 0) {
+            const firstImg = n.files.find(f => f.data && f.data.startsWith('data:image/'));
+            if (firstImg) {
+                thumbHTML = `<img src="${firstImg.data}" class="pinned-thumb">`;
+            }
+        }
+        
+        // Tạo ID để scroll (xóa dấu tiếng Việt và khoảng trắng)
+        const scrollId = "notice-" + n.date.replace(/[/:\s]/g, '-');
 
-    // Render Danh sách chính
+        return `
+            <div class="pinned-item" onclick="scrollToNotice('${scrollId}')">
+                ${thumbHTML}
+                <div class="pinned-link">📌 ${n.title}</div>
+                <div class="pinned-excerpt">${n.content.substring(0, 80)}...</div>
+                <div class="pinned-date">${n.date}</div>
+            </div>
+        `;
+    }).join('') : '<p style="color:#999; font-size:13px">Không có tin quan trọng.</p>';
+
+    // 2. Render Danh sách chính
     if (state.notices.length === 0) {
         grid.innerHTML = '<p style="text-align:center; padding:40px; color:#999">Chưa có thông báo nào.</p>';
         return;
     }
 
     grid.innerHTML = state.notices.slice().reverse().map(n => {
+        const scrollId = "notice-" + n.date.replace(/[/:\s]/g, '-');
         let attachmentsHTML = "";
         if (n.files && n.files.length > 0) {
             attachmentsHTML = '<div class="notice-attachment">';
@@ -340,7 +354,7 @@ function renderPublic() {
         }
 
         return `
-            <div class="notice-card">
+            <div class="notice-card" id="${scrollId}">
                 <div class="notice-header">
                     <div class="notice-title">${n.title}</div>
                     ${n.isPinned ? '<span class="pin-badge">📌 QUAN TRỌNG</span>' : ''}
@@ -351,6 +365,19 @@ function renderPublic() {
             </div>
         `;
     }).join('');
+}
+
+// Hàm cuộn tới bài viết
+function scrollToNotice(id) {
+    const element = document.getElementById(id);
+    if (element) {
+        // Cuộn mượt và highlight nhẹ bài viết
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        element.style.boxShadow = "0 0 20px rgba(233, 69, 96, 0.4)";
+        setTimeout(() => {
+            element.style.boxShadow = "var(--shadow)";
+        }, 2000);
+    }
 }
 
 function openFullImage(base64Data) {
@@ -364,7 +391,6 @@ function renderAdminNotices() {
         list.innerHTML = '<p style="text-align:center; padding:20px; color:#999">Chưa có lịch sử thông báo.</p>';
         return;
     }
-
     list.innerHTML = state.notices.slice().reverse().map((n, i) => {
         const actualIndex = state.notices.length - 1 - i;
         let attachmentsHTML = "";
@@ -379,7 +405,6 @@ function renderAdminNotices() {
             });
             attachmentsHTML += '</div>';
         }
-
         return `
             <div class="notice-card" style="margin-bottom:15px; background: #fff;">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
