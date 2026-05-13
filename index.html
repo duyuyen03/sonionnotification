@@ -187,14 +187,9 @@ const DB_URL = 'https://script.google.com/macros/s/AKfycbwJar9SH9Kd4XC7AsgZQ5Z9h
 let state = { notices: [], currentUser: "", currentTeam: "" };
 let selectedFiles = [];
 
-async function init() {
-    try {
-        const response = await fetch(DB_URL);
-        state.notices = await response.json();
-        renderPublic();
-    } catch(e) { 
-        document.getElementById('publicSubtitle').textContent = "Lỗi kết nối máy chủ.";
-    }
+
+function init() {
+    showPage('login'); // Ép buộc vào trang đăng nhập đầu tiên
 }
 
 function showPage(pageId) {
@@ -219,39 +214,30 @@ async function doLogin() {
         });
         const result = await response.json();
 
-        if (result.success) {
-    err.style.display = 'none';
-    state.currentUser = u;
-    state.currentTeam = result.team; // Lưu tên team: ADMIN, HRSERVICE, v.v.
+        if (result.auth && result.auth.success) {
+            state.currentUser = u;
+            state.currentTeam = result.auth.team;
+            state.notices = result.notices; // Nhận dữ liệu thông báo từ server sau khi login
 
-    // 1. Cập nhật nút trên thanh điều hướng
-    const adminBtn = document.getElementById('tab-login');
-    adminBtn.innerHTML = "⚙️ Quản lý";
-    adminBtn.onclick = () => showPage('admin');
-
-    // 2. PHÂN QUYỀN HIỂN THỊ: Kiểm tra checkbox ghim
-    const pinOption = document.getElementById('pinOption'); 
-    if (pinOption) {
-        if (state.currentTeam === "ADMIN") {
-            pinOption.style.display = 'flex'; // Hiện cho ADMIN
-        } else {
-            pinOption.style.display = 'none'; // Ẩn cho các team khác
-        }
-    }
-            if (!document.getElementById('logoutBtn')) {
-                const logoutBtn = document.createElement('button');
-                logoutBtn.className = 'logout-btn';
-                logoutBtn.id = 'logoutBtn';
-                logoutBtn.textContent = 'Thoát';
-                logoutBtn.onclick = () => location.reload();
-                document.getElementById('headerNav').appendChild(logoutBtn);
+            // Hiển thị menu điều hướng
+            document.getElementById('headerNav').style.display = 'flex';
+            
+            // Phân quyền hiển thị nút Admin
+            const adminTab = document.getElementById('tab-login');
+            if (state.currentTeam === "ADMIN") {
+                adminTab.style.display = 'block';
+                adminTab.innerHTML = "⚙️ Quản lý";
+                adminTab.onclick = () => showPage('admin');
+            } else {
+                adminTab.style.display = 'none'; // Nhân viên không thấy nút Quản lý
             }
-            showPage('admin');
-            alert("Xin chào " + result.team);
+
+            renderPublic(); 
+            showPage('public'); // Cho phép vào xem thông báo
         } else {
             err.style.display = 'block';
         }
-    } catch(e) { alert("Lỗi đăng nhập!"); }
+    } catch(e) { alert("Lỗi kết nối hệ thống!"); }
 }
 
 async function handleFile(input) {
