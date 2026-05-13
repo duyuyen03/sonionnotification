@@ -156,10 +156,10 @@
       <textarea id="noticeContent" style="min-height:120px; width:100%; border-radius:8px; border:1px solid var(--border); padding:10px;" placeholder="Nhập nội dung..."></textarea>
       
       <!-- Checkbox Ghim -->
-      <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-        <input type="checkbox" id="isPinnedCheck" style="width: 18px; height: 18px; cursor: pointer;">
-        <label for="isPinnedCheck" style="margin-bottom: 0; cursor: pointer; color: var(--accent);">Ghim thông báo này vào thanh bên</label>
-      </div>
+<div id="pinOption" style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+    <input type="checkbox" id="isPinnedCheck" style="width: 18px; height: 18px; cursor: pointer;">
+    <label for="isPinnedCheck" style="margin-bottom: 0; cursor: pointer; color: var(--accent);">Ghim thông báo này vào thanh bên</label>
+</div>
 
       <label>Đính kèm tài liệu</label>
       <div class="attach-zone">
@@ -218,13 +218,24 @@ async function doLogin() {
         const result = await response.json();
 
         if (result.success) {
-            err.style.display = 'none';
-            state.currentUser = u;
-            state.currentTeam = result.team;
-            const adminBtn = document.getElementById('tab-login');
-            adminBtn.innerHTML = "⚙️ Quản lý";
-            adminBtn.onclick = () => showPage('admin');
-            
+    err.style.display = 'none';
+    state.currentUser = u;
+    state.currentTeam = result.team; // Lưu tên team: ADMIN, HRSERVICE, v.v.
+
+    // 1. Cập nhật nút trên thanh điều hướng
+    const adminBtn = document.getElementById('tab-login');
+    adminBtn.innerHTML = "⚙️ Quản lý";
+    adminBtn.onclick = () => showPage('admin');
+
+    // 2. PHÂN QUYỀN HIỂN THỊ: Kiểm tra checkbox ghim
+    const pinOption = document.getElementById('pinOption'); 
+    if (pinOption) {
+        if (state.currentTeam === "ADMIN") {
+            pinOption.style.display = 'flex'; // Hiện cho ADMIN
+        } else {
+            pinOption.style.display = 'none'; // Ẩn cho các team khác
+        }
+    }
             if (!document.getElementById('logoutBtn')) {
                 const logoutBtn = document.createElement('button');
                 logoutBtn.className = 'logout-btn';
