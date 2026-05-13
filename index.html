@@ -1,228 +1,34 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thông Báo Nội Bộ</title>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --primary: #1a1a2e;
-    --accent: #e94560;
-    --surface: #ffffff;
-    --surface2: #f8f7f4;
-    --border: #e8e6e0;
-    --text: #1a1a2e;
-    --text-muted: #888880;
-    --radius: 12px;
-    --shadow: 0 4px 24px rgba(26,26,46,0.08);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--surface2); color: var(--text); min-height: 100vh; scroll-behavior: smooth; }
-  
-  /* HEADER */
-  .site-header { background: var(--primary); color: #fff; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 1000; }
-  .company-logo { height: 32px; width: auto; }
-  .site-logo { display: flex; align-items: center; gap: 12px; }
-  .logo-text { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
-  .header-nav { display: flex; gap: 10px; align-items: center; }
-
-  .nav-tab { background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: 0.2s; }
-  .nav-tab.active { background: var(--accent); }
-  .logout-btn { background: none; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; }
-
-  /* LAYOUT */
-  .main-container { display: flex; gap: 24px; max-width: 1200px; margin: 0 auto; padding: 2rem; }
-  .notice-column { flex: 3; }
-  .sidebar-column { flex: 1; position: sticky; top: 84px; }
-
-  /* CARD TRANG CHỦ (Giao diện mới) */
-  .notice-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow); margin-bottom: 20px; }
-  .pin-badge { font-size: 10px; background: #fff3cd; color: #856404; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
-  
-  /* SIDEBAR TIN GHIM (Giao diện mới) */
-  .sidebar-panel { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.2rem; box-shadow: var(--shadow); }
-  .pinned-item { padding: 12px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
-  .pinned-thumb { width: 100%; height: 90px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; }
-
-  /* --- PHẦN GIỮ NGUYÊN CHO ADMIN (image_2d8792.png) --- */
-  .admin-wrapper { max-width: 500px; margin: 0 auto; padding: 20px; }
-  .admin-panel { background: #fff; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 30px; }
-  .admin-input { width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 8px; background: #f9f9f9; margin-bottom: 15px; font-size: 14px; }
-  
-  /* Card lịch sử trong Admin - Giữ kích thước nhỏ gọn */
-  .admin-history-card { 
-    background: #fff; 
-    border-radius: 12px; 
-    border: 1px solid #eee; 
-    padding: 15px; 
-    margin-bottom: 15px;
-    font-size: 13px; 
-  }
-  .admin-history-card .title { font-weight: 700; font-size: 15px; margin-bottom: 5px; }
-  .admin-history-card img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; margin-top: 10px; }
-  .delete-btn { color: #e74c3c; border: 1px solid #e74c3c; background: none; padding: 2px 8px; border-radius: 4px; cursor: pointer; float: right; }
-</style>
-</head>
-<body>
-
-<header class="site-header">
-  <div class="site-logo">
-    <img src="https://raw.githubusercontent.com/duyuyen03/sonionnotification/main/Logo%20sonion.png" alt="Logo" class="company-logo">
-    <span class="logo-text">Thông Báo Nội Bộ</span>
-  </div>
-  <div class="header-nav" id="headerNav">
-    <button class="nav-tab active" onclick="showPage('public')">📢 Thông báo</button>
-    <button class="nav-tab" id="admin-tab-btn" onclick="showPage('login')">🔐 Quản lý</button>
-  </div>
-</header>
-
-<!-- TRANG CHỦ -->
-<div class="page active" id="page-public">
-  <div class="main-container">
-    <div class="notice-column">
-      <h1 style="margin-bottom:20px">Bản tin mới nhất</h1>
-      <div id="noticeGrid"></div>
-    </div>
-    <aside class="sidebar-column">
-      <div class="sidebar-panel">
-        <h3 style="color:var(--accent); margin-bottom:15px">📌 Tin ghim</h3>
-        <div id="pinnedList"></div>
-      </div>
-    </aside>
-  </div>
-</div>
-
-<!-- TRANG LOGIN -->
-<div class="page" id="page-login">
-  <div class="admin-wrapper">
-    <div class="admin-panel">
-      <h2>Đăng nhập Admin</h2>
-      <input type="text" id="loginUser" class="admin-input" placeholder="Tài khoản">
-      <input type="password" id="loginPass" class="admin-input" placeholder="Mật khẩu">
-      <button class="nav-tab active" style="width:100%" onclick="doLogin()">Vào hệ thống</button>
-    </div>
-  </div>
-</div>
-
-<!-- TRANG ADMIN (GIAO DIỆN THEO ẢNH image_2d8792.png) -->
-<div class="page" id="page-admin">
-  <div class="admin-wrapper">
-    <h1 style="margin-bottom:20px; text-align:center">Bảng điều khiển</h1>
-    
-    <div class="admin-panel">
-      <label>Tiêu đề thông báo</label>
-      <input type="text" id="noticeTitle" class="admin-input" placeholder="VD: Thông báo lịch trực tết...">
-      
-      <label>Nội dung</label>
-      <textarea id="noticeContent" class="admin-input" style="height:100px" placeholder="Nhập nội dung..."></textarea>
-      
-      <div style="margin-bottom:15px; font-size:13px; color:var(--accent)">
-        <input type="checkbox" id="isPinnedCheck"> Ghim thông báo này vào thanh bên
-      </div>
-
-      <div style="border: 2px dashed #eee; padding: 15px; text-align: center; border-radius: 8px; margin-bottom: 15px;">
-        <input type="file" id="noticeFile" multiple style="display:none" onchange="handleFile(this)">
-        <button onclick="document.getElementById('noticeFile').click()">Chọn tệp</button>
-        <div id="previewImgContainer" style="margin-top:10px"></div>
-      </div>
-      
-      <button class="nav-tab active" style="width:100%; padding:12px" onclick="publishNotice()">Đăng & Gửi Power Automate</button>
-    </div>
-
-    <h3>Lịch sử thông báo</h3>
-    <div id="adminNoticeList" style="margin-top:15px"></div>
-  </div>
-</div>
-
-<script>
-const DB_URL = 'https://script.google.com/macros/s/AKfycbyUFNsqk90ZwagUzns3sS6M--0Ald53QZ2trAENFR1IOxOxRQWQSzfKDfI5Q2u6RguEqg/exec';
-let state = { notices: [], currentTeam: "" };
-let selectedFiles = [];
-
-async function init() {
-    const res = await fetch(DB_URL);
-    state.notices = await res.json();
-    renderPublic();
 }
+            });
+            attachmentsHTML += '</div>';
+        }
 
-function showPage(p) {
-    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-    document.getElementById('page-' + p).classList.add('active');
-}
-
-async function doLogin() {
-    const u = document.getElementById('loginUser').value;
-    const p = document.getElementById('loginPass').value;
-    const res = await fetch(DB_URL, { method: 'POST', body: JSON.stringify({ action: "check_login", username: u, password: p })});
-    const result = await res.json();
-    if(result.success) {
-        state.currentTeam = result.team;
-        showPage('admin');
-        renderAdminNotices();
-    } else alert("Sai tài khoản!");
-}
-
-async function handleFile(input) {
-    const files = Array.from(input.files);
-    selectedFiles = await Promise.all(files.map(file => new Promise(resolve => {
-        const reader = new FileReader();
-        reader.onload = e => resolve({ Name: file.name, data: e.target.result, type: file.type });
-        reader.readAsDataURL(file);
-    })));
-    document.getElementById('previewImgContainer').innerHTML = "Đã chọn " + files.length + " tệp";
-}
-
-async function publishNotice() {
-    const payload = {
-        title: document.getElementById('noticeTitle').value,
-        content: `[Team: ${state.currentTeam}] ` + document.getElementById('noticeContent').value,
-        date: new Date().toLocaleString('vi-VN'),
-        isPinned: document.getElementById('isPinnedCheck').checked,
-        files: selectedFiles
-    };
-    await fetch(DB_URL, { method: 'POST', body: JSON.stringify(payload) });
-    alert("Đã đăng!");
-    location.reload();
-}
-
-function renderPublic() {
-    const grid = document.getElementById('noticeGrid');
-    const pinned = document.getElementById('pinnedList');
-    
-    // Render Sidebar (Giao diện mới có ảnh)
-    const pins = state.notices.filter(n => n.isPinned);
-    pinned.innerHTML = pins.map(n => {
-        let img = n.files?.find(f => f.type?.startsWith('image'))?.data || "";
         return `
-            <div class="pinned-item" onclick="document.getElementById('n-${n.date}').scrollIntoView({behavior:'smooth'})">
-                ${img ? `<img src="${img}" class="pinned-thumb">` : ''}
-                <div style="font-weight:600; font-size:14px">📌 ${n.title}</div>
-            </div>`;
+            <div class="notice-card" style="margin-bottom:15px; background: #fff;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <div class="notice-title" style="font-size:16px;">${n.isPinned ? '📌 ' : ''}${n.title}</div>
+                        <div class="notice-body" style="font-size:13px;">${n.content.replace(/\n/g, '<br>')}</div>
+                    </div>
+                    <button onclick="deleteNotice(${actualIndex})" style="color:var(--danger); background:none; border:1px solid var(--danger); padding:2px 8px; border-radius:4px; cursor:pointer; font-size:12px;">Xóa</button>
+                </div>
+                ${attachmentsHTML}
+                <div class="notice-footer">📅 ${n.date}</div>
+            </div>
+        `;
     }).join('');
-
-    // Render danh sách chính
-    grid.innerHTML = state.notices.slice().reverse().map(n => `
-        <div class="notice-card" id="n-${n.date}">
-            <h3>${n.title} ${n.isPinned ? '<span class="pin-badge">PIN</span>' : ''}</h3>
-            <p style="margin:10px 0">${n.content}</p>
-            <small style="color:#999">${n.date}</small>
-        </div>
-    `).join('');
 }
 
-function renderAdminNotices() {
-    const list = document.getElementById('adminNoticeList');
-    // Render Admin (Dùng class riêng admin-history-card để giữ size nhỏ như image_2d8792.png)
-    list.innerHTML = state.notices.slice().reverse().map(n => `
-        <div class="admin-history-card">
-            <button class="delete-btn">Xóa</button>
-            <div class="title">${n.title}</div>
-            <div style="color:#666">${n.content.substring(0, 50)}...</div>
-            ${n.files?.find(f => f.type?.startsWith('image')) ? `<img src="${n.files.find(f => f.type.startsWith('image')).data}">` : ''}
-            <div style="font-size:11px; margin-top:5px; color:#aaa">🕒 ${n.date}</div>
-        </div>
-    `).join('');
+async function deleteNotice(index) {
+    if(!confirm("Xóa thông báo này?")) return;
+    try {
+        await fetch(DB_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: "delete", title: state.notices[index].title })
+        });
+        state.notices.splice(index, 1);
+        renderAdminNotices();
+    } catch(e) { alert("Lỗi xóa!"); }
 }
 
 init();
