@@ -202,42 +202,38 @@ function showPage(pageId) {
     if (pageId === 'admin') renderAdminNotices();
 }
 
-async function doLogin() {
-    const u = document.getElementById('loginUser').value;
-    const p = document.getElementById('loginPass').value;
-    const err = document.getElementById('loginErr');
+if (result.auth && result.auth.success) {
+    state.currentUser = u;
+    state.currentTeam = result.auth.team; // Giá trị lấy từ cột C (ADMIN, MEMBER, USER)
+    state.notices = result.notices;
 
-    try {
-        const response = await fetch(DB_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: "check_login", username: u, password: p })
-        });
-        const result = await response.json();
+    // Hiển thị menu điều hướng
+    document.getElementById('headerNav').style.display = 'flex';
+    
+    const adminTab = document.getElementById('tab-login');
+    const pinOption = document.getElementById('pinOption');
 
-        if (result.auth && result.auth.success) {
-            state.currentUser = u;
-            state.currentTeam = result.auth.team;
-            state.notices = result.notices; // Nhận dữ liệu thông báo từ server sau khi login
+    // --- LOGIC PHÂN QUYỀN TẠI ĐÂY ---
+    
+    if (state.currentTeam === "ADMIN") {
+        // Cấp 1: ADMIN - Thấy tất cả
+        adminTab.style.display = 'block';
+        adminTab.innerHTML = "⚙️ Quản lý";
+        if (pinOption) pinOption.style.display = 'flex';
+    } 
+    else if (state.currentTeam === "MEMBER") {
+        // Cấp 2: MEMBER - Thấy nút Quản lý nhưng ẩn Checkbox Ghim
+        adminTab.style.display = 'block';
+        adminTab.innerHTML = "⚙️ Quản lý";
+        if (pinOption) pinOption.style.display = 'none';
+    } 
+    else {
+        // Cấp 3: USER (hoặc các loại khác) - Ẩn hoàn toàn nút Quản lý
+        adminTab.style.display = 'none';
+    }
 
-            // Hiển thị menu điều hướng
-            document.getElementById('headerNav').style.display = 'flex';
-            
-            // Phân quyền hiển thị nút Admin
-            const adminTab = document.getElementById('tab-login');
-            if (state.currentTeam === "ADMIN") {
-                adminTab.style.display = 'block';
-                adminTab.innerHTML = "⚙️ Quản lý";
-                adminTab.onclick = () => showPage('admin');
-            } else {
-                adminTab.style.display = 'none'; // Nhân viên không thấy nút Quản lý
-            }
-
-            renderPublic(); 
-            showPage('public'); // Cho phép vào xem thông báo
-        } else {
-            err.style.display = 'block';
-        }
-    } catch(e) { alert("Lỗi kết nối hệ thống!"); }
+    renderPublic(); 
+    showPage('public'); 
 }
 
 async function handleFile(input) {
