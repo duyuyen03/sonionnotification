@@ -29,66 +29,60 @@
   color: #fff !important;
   padding: 0 15px !important;
   display: flex !important;
-  flex-direction: row !important; /* Luôn nằm trên một hàng */
   align-items: center !important;
-  justify-content: space-between !important; /* Logo bên trái, Nav bên phải */
+  justify-content: space-between !important;
   height: 64px !important;
   width: 100% !important;
-  box-sizing: border-box !important;
   position: sticky !important;
   top: 0 !important;
   z-index: 1000 !important;
 }
-  .company-logo {
-  height: 30px !important;
-  width: auto !important;
-}
-  .site-logo {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  flex: 1 !important; /* Chiếm không gian bên trái */
-}
-  .logo-text {
-  font-family: 'Playfair Display', serif;
-  font-size: 18px;
-  font-weight: 700;
-  white-space: nowrap;
-}
+  .company-logo { height: 30px !important; width: auto !important; }
+  .site-logo { display: flex !important; align-items: center !important; gap: 10px !important; flex: 1 !important; }
+  .logo-text { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; white-space: nowrap; }
+  .header-nav { display: flex !important; gap: 8px !important; align-items: center !important; justify-content: flex-end !important; flex: 1 !important; }
 
-.header-nav {
-  display: flex !important;
-  gap: 8px !important;
-  align-items: center !important;
-  justify-content: flex-end !important; /* Ép cụm nút sang sát lề phải */
-  flex: 1 !important; /* Chiếm không gian bên phải */
-}
+  @media (max-width: 600px) {
+    .logo-text { display: none !important; }
+    .nav-tab { padding: 6px 10px !important; font-size: 12px !important; }
+  }
 
-/* ĐIỀU CHỈNH RIÊNG CHO ĐIỆN THOẠI */
-@media (max-width: 600px) {
-  .logo-text {
-    display: none !important; /* Ẩn chữ "Thông Báo Nội Bộ" trên mobile để tránh chật chội */
-  }
-  .nav-tab {
-    padding: 6px 10px !important;
-    font-size: 12px !important;
-    white-space: nowrap !important; /* Không cho chữ trong nút bị xuống dòng */
-  }
-}
+  .nav-tab { background: rgba(255,255,255,0.08); border: none; color: rgba(255,255,255,0.8); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: 0.2s; font-weight: 500; }
   .nav-tab.active, .nav-tab:hover { background: rgba(255,255,255,0.12); color: #fff; }
   .nav-tab.accent-tab { background: var(--accent); color: #fff; }
   .logout-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; margin-left: 10px; }
 
+  /* LAYOUT CHÍNH */
+  .main-container { display: flex; gap: 24px; max-width: 1100px; margin: 0 auto; padding: 2rem; }
+  .notice-column { flex: 3; }
+  .sidebar-column { flex: 1; }
+
+  @media (max-width: 900px) {
+    .main-container { flex-direction: column; padding: 1rem; }
+    .sidebar-column { order: -1; } /* Tin ghim hiện lên trước trên mobile */
+  }
+
   /* PAGES */
-  .page { display: none; padding: 2rem; max-width: 960px; margin: 0 auto; }
+  .page { display: none; }
   .page.active { display: block; }
   
-  /* PUBLIC */
   .page-title { font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 4px; color: var(--primary); }
-  .page-subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 2rem; }
+  .page-subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 1.5rem; }
+
+  /* SIDEBAR TIN GHIM */
+  .sidebar-panel { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.2rem; box-shadow: var(--shadow); position: sticky; top: 84px; }
+  .sidebar-title { font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .pinned-item { padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+  .pinned-item:last-child { border: 0; }
+  .pinned-link { text-decoration: none; color: var(--primary); font-size: 14px; font-weight: 500; display: block; margin-bottom: 4px; }
+  .pinned-date { font-size: 11px; color: var(--text-muted); }
+
+  /* NOTICE CARD */
   .notice-grid { display: grid; gap: 16px; }
-  .notice-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow); }
-  .notice-title { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+  .notice-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; box-shadow: var(--shadow); position: relative; }
+  .notice-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .notice-title { font-size: 18px; font-weight: 700; color: var(--primary); }
+  .pin-badge { font-size: 10px; background: #fff3cd; color: #856404; padding: 2px 8px; border-radius: 10px; font-weight: 700; border: 1px solid #ffeeba; }
   .notice-body { font-size: 14px; color: #444; line-height: 1.7; }
   .notice-attachment { margin-top: 15px; padding-top: 12px; border-top: 1px dashed var(--border); display: flex; flex-wrap: wrap; gap: 10px; }
   .notice-attachment img { max-width: 100%; height: auto; max-height: 400px; border-radius: 8px; border: 1px solid #eee; cursor: zoom-in; }
@@ -102,10 +96,7 @@
     font-family: inherit; font-size: 14px; background: var(--surface2); margin-bottom: 16px; outline: none;
   }
   .attach-zone { background: #fcfcfc; border: 2px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 16px; }
-  #previewImgContainer { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 10px; }
-  .preview-thumb { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
   .send-btn { width: 100%; padding: 14px; font-size: 15px; border-radius: 10px; background: var(--primary); color: #fff; border: none; cursor: pointer; font-weight: 600; }
-  .send-btn:disabled { opacity: 0.5; }
 </style>
 </head>
 <body>
@@ -121,53 +112,77 @@
   </div>
 </header>
 
+<!-- TRANG CHỦ (PUBLIC) -->
 <div class="page active" id="page-public">
-  <h1 class="page-title">Thông báo</h1>
-  <p class="page-subtitle" id="publicSubtitle">Đang tải...</p>
-  <div class="notice-grid" id="noticeGrid"></div>
+  <div class="main-container">
+    <div class="notice-column">
+      <h1 class="page-title">Thông báo</h1>
+      <p class="page-subtitle" id="publicSubtitle">Đang tải...</p>
+      <div class="notice-grid" id="noticeGrid"></div>
+    </div>
+    
+    <aside class="sidebar-column">
+      <div class="sidebar-panel">
+        <div class="sidebar-title">📌 Tin quan trọng</div>
+        <div id="pinnedList">
+          <p style="color:#999; font-size:13px">Đang tải tin ghim...</p>
+        </div>
+      </div>
+    </aside>
+  </div>
 </div>
 
+<!-- TRANG LOGIN -->
 <div class="page" id="page-login">
   <div class="panel" style="max-width: 400px; margin: 40px auto;">
     <h2 style="margin-bottom:20px">Administrator</h2>
     <label>User</label>
-    <input type="text" id="loginUser" placeholder="">
+    <input type="text" id="loginUser">
     <label>Password</label>
-    <input type="password" id="loginPass" placeholder="">
+    <input type="password" id="loginPass">
     <p id="loginErr" style="color:var(--danger); font-size:13px; margin-bottom:10px; display:none">❌ Sai tài khoản hoặc mật khẩu</p>
     <button class="send-btn" onclick="doLogin()">Login</button>
   </div>
 </div>
 
+<!-- TRANG QUẢN LÝ -->
 <div class="page" id="page-admin">
-  <h1 class="page-title">Bảng điều khiển</h1>
-  <div class="panel">
-    <label>Tiêu đề thông báo</label>
-    <input type="text" id="noticeTitle" placeholder="">
-    <label>Nội dung</label>
-    <textarea id="noticeContent" style="min-height:120px; width:100%; border-radius:8px; border:1px solid var(--border); padding:10px;" placeholder=""></textarea>
-    <label>Đính kèm tài liệu</label>
-    <div class="attach-zone">
-      <input type="file" id="noticeFile" style="display:none" multiple onchange="handleFile(this)">
-      <button type="button" onclick="document.getElementById('noticeFile').click()">Chọn tệp</button>
-      <p id="fileNameDisplay" style="font-size:12px; color:#888; margin-top:8px">Chưa có tệp nào</p>
-      <div id="previewImgContainer"></div>
+  <div class="main-container" style="max-width: 960px; flex-direction: column;">
+    <h1 class="page-title">Bảng điều khiển</h1>
+    <div class="panel">
+      <label>Tiêu đề thông báo</label>
+      <input type="text" id="noticeTitle" placeholder="VD: Thông báo lịch trực tết...">
+      <label>Nội dung</label>
+      <textarea id="noticeContent" style="min-height:120px; width:100%; border-radius:8px; border:1px solid var(--border); padding:10px;" placeholder="Nhập nội dung..."></textarea>
+      
+      <!-- Checkbox Ghim -->
+      <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+        <input type="checkbox" id="isPinnedCheck" style="width: 18px; height: 18px; cursor: pointer;">
+        <label for="isPinnedCheck" style="margin-bottom: 0; cursor: pointer; color: var(--accent);">Ghim thông báo này vào thanh bên</label>
+      </div>
+
+      <label>Đính kèm tài liệu</label>
+      <div class="attach-zone">
+        <input type="file" id="noticeFile" style="display:none" multiple onchange="handleFile(this)">
+        <button type="button" onclick="document.getElementById('noticeFile').click()">Chọn tệp</button>
+        <p id="fileNameDisplay" style="font-size:12px; color:#888; margin-top:8px">Chưa có tệp nào</p>
+        <div id="previewImgContainer"></div>
+      </div>
+      <button class="send-btn" id="sendBtn" onclick="publishNotice()">Đăng & Gửi Power Automate</button>
     </div>
-    <button class="send-btn" id="sendBtn" onclick="publishNotice()">Đăng thông báo</button>
-    <div id="sendStatus" style="margin-top:10px; font-size:13px; display:none"></div>
-  </div>
-  <div class="panel">
-    <h3>Lịch sử thông báo</h3>
-    <div id="adminNoticeList" style="margin-top:15px"></div>
+    
+    <div class="panel">
+      <h3>Lịch sử thông báo</h3>
+      <div id="adminNoticeList" style="margin-top:15px"></div>
+    </div>
   </div>
 </div>
 
 <script>
-// --- CẤU HÌNH ---
 const WEBHOOK_URL = 'https://defaultaf1f375339254e6f949b97c0073208.03.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/9f15bac38c2640b185716127e7c0ff44/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Bxa82ctx9WzqmiTinfUvl5OuwFHkDyX-LhfbnPq70bs';
 const DB_URL = 'https://script.google.com/macros/s/AKfycbyUFNsqk90ZwagUzns3sS6M--0Ald53QZ2trAENFR1IOxOxRQWQSzfKDfI5Q2u6RguEqg/exec'; 
 
-let state = { notices: [], currentUser: "" };
+let state = { notices: [], currentUser: "", currentTeam: "" };
 let selectedFiles = [];
 
 async function init() {
@@ -204,7 +219,8 @@ async function doLogin() {
 
         if (result.success) {
             err.style.display = 'none';
-            state.currentUser = result.team;
+            state.currentUser = u;
+            state.currentTeam = result.team;
             const adminBtn = document.getElementById('tab-login');
             adminBtn.innerHTML = "⚙️ Quản lý";
             adminBtn.onclick = () => showPage('admin');
@@ -246,6 +262,7 @@ async function handleFile(input) {
             const img = document.createElement('img');
             img.src = f.fullData;
             img.className = 'preview-thumb';
+            img.style = "width:80px; height:80px; object-fit:cover; border-radius:6px; margin:5px;";
             container.appendChild(img);
         }
     });
@@ -255,6 +272,7 @@ async function handleFile(input) {
 async function publishNotice() {
     const title = document.getElementById('noticeTitle').value;
     const content = document.getElementById('noticeContent').value;
+    const isPinned = document.getElementById('isPinnedCheck').checked;
     const btn = document.getElementById('sendBtn');
     
     if(!title || !content) return alert("Vui lòng nhập đủ thông tin!");
@@ -262,9 +280,10 @@ async function publishNotice() {
     btn.disabled = true;
     const payload = {
         title: title,
-        content: `[Team: ${state.currentUser}] \n` + content,
+        content: `[Team: ${state.currentTeam}] \n` + content,
         date: new Date().toLocaleString('vi-VN'),
-        files: selectedFiles.map(f => ({ name: f.Name, data: f.fullData }))
+        files: selectedFiles.map(f => ({ name: f.Name, data: f.fullData })),
+        isPinned: isPinned // Gửi trạng thái ghim lên Server
     };
 
     try {
@@ -274,14 +293,13 @@ async function publishNotice() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    title: payload.title,
+                    title: (isPinned ? "📌 " : "") + payload.title,
                     content: payload.content,
                     date: payload.date,
                     attachments: selectedFiles.map(f => ({ Name: f.Name, ContentBytes: f.ContentBytes }))
                 })
             });
         }
-        state.notices.push(payload);
         alert("Đăng thành công!");
         location.reload();
     } catch(e) { alert("Lỗi gửi tin!"); btn.disabled = false; }
@@ -289,22 +307,31 @@ async function publishNotice() {
 
 function renderPublic() {
     const grid = document.getElementById('noticeGrid');
+    const pinnedList = document.getElementById('pinnedList');
     document.getElementById('publicSubtitle').textContent = state.notices.length + " thông báo";
     
+    // Render Tin Ghim (Sidebar)
+    const pins = state.notices.filter(n => n.isPinned);
+    pinnedList.innerHTML = pins.length > 0 ? pins.slice().reverse().map(n => `
+        <div class="pinned-item">
+            <div class="pinned-link">${n.title}</div>
+            <div class="pinned-date">${n.date}</div>
+        </div>
+    `).join('') : '<p style="color:#999; font-size:13px">Không có tin ghim.</p>';
+
+    // Render Danh sách chính
     if (state.notices.length === 0) {
         grid.innerHTML = '<p style="text-align:center; padding:40px; color:#999">Chưa có thông báo nào.</p>';
         return;
     }
 
     grid.innerHTML = state.notices.slice().reverse().map(n => {
-        // Logic xử lý phần đính kèm
         let attachmentsHTML = "";
         if (n.files && n.files.length > 0) {
             attachmentsHTML = '<div class="notice-attachment">';
             n.files.forEach(f => {
-                // Kiểm tra nếu là ảnh thì hiển thị ảnh, nếu là tệp khác thì hiện link tải
                 if (f.data && f.data.startsWith('data:image/')) {
-                    attachmentsHTML += `<img src="${f.data}" onclick="openFullImage('${f.data}')" style="max-width:100%; cursor:pointer; border-radius:8px; margin-top:10px;" title="Nhấp để xem ảnh lớn">`;
+                    attachmentsHTML += `<img src="${f.data}" onclick="openFullImage('${f.data}')" title="Nhấp để xem ảnh lớn">`;
                 } else if (f.data) {
                     attachmentsHTML += `<a href="${f.data}" download="${f.name}" style="color:var(--accent); text-decoration:none; font-size:12px; font-weight:600; border:1px solid #eee; padding:5px 10px; border-radius:4px; display:inline-block; margin-right:5px;">📎 ${f.name}</a>`;
                 }
@@ -314,7 +341,10 @@ function renderPublic() {
 
         return `
             <div class="notice-card">
-                <div class="notice-title">${n.title}</div>
+                <div class="notice-header">
+                    <div class="notice-title">${n.title}</div>
+                    ${n.isPinned ? '<span class="pin-badge">📌 QUAN TRỌNG</span>' : ''}
+                </div>
                 <div class="notice-body">${n.content.replace(/\n/g, '<br>')}</div>
                 ${attachmentsHTML}
                 <div class="notice-footer">📅 ${n.date}</div>
@@ -323,7 +353,6 @@ function renderPublic() {
     }).join('');
 }
 
-// Thêm hàm này để khi nhấn vào ảnh nó sẽ mở to ra ở tab mới
 function openFullImage(base64Data) {
     const win = window.open();
     win.document.write(`<body style="margin:0; background:#111; display:flex; align-items:center; justify-content:center;"><img src="${base64Data}" style="max-width:100%; max-height:100vh; cursor:zoom-out" onclick="window.close()"></body>`);
@@ -331,7 +360,6 @@ function openFullImage(base64Data) {
 
 function renderAdminNotices() {
     const list = document.getElementById('adminNoticeList');
-    
     if (state.notices.length === 0) {
         list.innerHTML = '<p style="text-align:center; padding:20px; color:#999">Chưa có lịch sử thông báo.</p>';
         return;
@@ -339,33 +367,30 @@ function renderAdminNotices() {
 
     list.innerHTML = state.notices.slice().reverse().map((n, i) => {
         const actualIndex = state.notices.length - 1 - i;
-        
         let attachmentsHTML = "";
         if (n.files && n.files.length > 0) {
             attachmentsHTML = '<div class="notice-attachment" style="margin-top:10px; border-top: 1px dashed #eee; padding-top:10px;">';
             n.files.forEach(f => {
                 if (f.data && f.data.startsWith('data:image/')) {
-                    // Đã thêm onclick="openFullImage()" và cursor:pointer bên dưới
-                    attachmentsHTML += `<img src="${f.data}" 
-                                         onclick="openFullImage('${f.data}')" 
-                                         style="height:60px; width:60px; object-fit:cover; border-radius:4px; margin-right:8px; border:1px solid #ddd; cursor:pointer;" 
-                                         title="Xem ảnh lớn">`;
+                    attachmentsHTML += `<img src="${f.data}" onclick="openFullImage('${f.data}')" style="height:60px; width:60px; object-fit:cover; border-radius:4px; margin-right:8px; border:1px solid #ddd; cursor:pointer;">`;
                 } else if (f.data) {
-                    attachmentsHTML += `<a href="${f.data}" download="${f.name}" style="font-size:11px; color:#666; background:#f0f0f0; padding:2px 6px; border-radius:4px; margin-right:5px; text-decoration:none;">📎 ${f.name.substring(0,10)}...</a>`;
+                    attachmentsHTML += `<span style="font-size:11px; color:#666;">📎 ${f.name.substring(0,10)}...</span>`;
                 }
             });
             attachmentsHTML += '</div>';
         }
 
         return `
-            <div class="notice-card" style="margin-bottom:15px; position:relative; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; background: #fff;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
-                    <div class="notice-title" style="font-size:16px; font-weight:700; color:var(--primary);">${n.title}</div>
-                    <button onclick="deleteNotice(${actualIndex})" style="color:var(--danger); background:none; border:1px solid var(--danger); padding:2px 8px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:600;">Xóa</button>
+            <div class="notice-card" style="margin-bottom:15px; background: #fff;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <div class="notice-title" style="font-size:16px;">${n.isPinned ? '📌 ' : ''}${n.title}</div>
+                        <div class="notice-body" style="font-size:13px;">${n.content.replace(/\n/g, '<br>')}</div>
+                    </div>
+                    <button onclick="deleteNotice(${actualIndex})" style="color:var(--danger); background:none; border:1px solid var(--danger); padding:2px 8px; border-radius:4px; cursor:pointer; font-size:12px;">Xóa</button>
                 </div>
-                <div class="notice-body" style="font-size:13px; color:#444; line-height:1.5;">${n.content.replace(/\n/g, '<br>')}</div>
                 ${attachmentsHTML}
-                <div class="notice-footer" style="margin-top:12px; font-size:11px; color:#888;">📅 ${n.date}</div>
+                <div class="notice-footer">📅 ${n.date}</div>
             </div>
         `;
     }).join('');
