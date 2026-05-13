@@ -25,18 +25,18 @@
   
   /* HEADER */
   .site-header {
-  background: var(--primary) !important;
-  color: #fff !important;
-  padding: 0 15px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  height: 64px !important;
-  width: 100% !important;
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 1000 !important;
-}
+    background: var(--primary) !important;
+    color: #fff !important;
+    padding: 0 15px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    height: 64px !important;
+    width: 100% !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+  }
   .company-logo { height: 30px !important; width: auto !important; }
   .site-logo { display: flex !important; align-items: center !important; gap: 10px !important; flex: 1 !important; }
   .logo-text { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; white-space: nowrap; }
@@ -102,6 +102,16 @@
   }
   .attach-zone { background: #fcfcfc; border: 2px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 16px; }
   .send-btn { width: 100%; padding: 14px; font-size: 15px; border-radius: 10px; background: var(--primary); color: #fff; border: none; cursor: pointer; font-weight: 600; }
+
+  /* FIX CHO TRANG ADMIN */
+  #page-admin .main-container {
+    display: block; /* Ép về khối để tràn chiều rộng */
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  #page-admin .panel {
+    width: 100%;
+  }
 </style>
 </head>
 <body>
@@ -136,7 +146,6 @@
   </div>
 </div>
 
-<!-- ... CÁC PHẦN LOGIN VÀ ADMIN GIỮ NGUYÊN ... -->
 <div class="page" id="page-login">
   <div class="panel" style="max-width: 400px; margin: 40px auto;">
     <h2 style="margin-bottom:20px">Administrator</h2>
@@ -151,7 +160,7 @@
 
 <!-- TRANG QUẢN LÝ -->
 <div class="page" id="page-admin">
-  <div class="main-container" style="max-width: 960px; flex-direction: column;">
+  <div class="main-container">
     <h1 class="page-title">Bảng điều khiển</h1>
     <div class="panel">
       <label>Tiêu đề thông báo</label>
@@ -208,7 +217,6 @@ function showPage(pageId) {
     if (pageId === 'admin') renderAdminNotices();
 }
 
-// ... HÀM doLogin, handleFile, publishNotice GIỮ NGUYÊN ...
 async function doLogin() {
     const u = document.getElementById('loginUser').value;
     const p = document.getElementById('loginPass').value;
@@ -302,28 +310,19 @@ async function publishNotice() {
     } catch(e) { alert("Lỗi gửi tin!"); btn.disabled = false; }
 }
 
-// --- CẬP NHẬT CHÍNH TẠI ĐÂY ---
-
 function renderPublic() {
     const grid = document.getElementById('noticeGrid');
     const pinnedList = document.getElementById('pinnedList');
     document.getElementById('publicSubtitle').textContent = state.notices.length + " thông báo";
     
-    // 1. Render Tin Ghim (Sidebar) với nội dung và ảnh
     const pins = state.notices.filter(n => n.isPinned);
     pinnedList.innerHTML = pins.length > 0 ? pins.slice().reverse().map(n => {
-        // Lấy ảnh đầu tiên nếu có để làm thumbnail
         let thumbHTML = "";
         if (n.files && n.files.length > 0) {
             const firstImg = n.files.find(f => f.data && f.data.startsWith('data:image/'));
-            if (firstImg) {
-                thumbHTML = `<img src="${firstImg.data}" class="pinned-thumb">`;
-            }
+            if (firstImg) { thumbHTML = `<img src="${firstImg.data}" class="pinned-thumb">`; }
         }
-        
-        // Tạo ID để scroll (xóa dấu tiếng Việt và khoảng trắng)
         const scrollId = "notice-" + n.date.replace(/[/:\s]/g, '-');
-
         return `
             <div class="pinned-item" onclick="scrollToNotice('${scrollId}')">
                 ${thumbHTML}
@@ -334,7 +333,6 @@ function renderPublic() {
         `;
     }).join('') : '<p style="color:#999; font-size:13px">Không có tin quan trọng.</p>';
 
-    // 2. Render Danh sách chính
     if (state.notices.length === 0) {
         grid.innerHTML = '<p style="text-align:center; padding:40px; color:#999">Chưa có thông báo nào.</p>';
         return;
@@ -369,16 +367,12 @@ function renderPublic() {
     }).join('');
 }
 
-// Hàm cuộn tới bài viết
 function scrollToNotice(id) {
     const element = document.getElementById(id);
     if (element) {
-        // Cuộn mượt và highlight nhẹ bài viết
         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         element.style.boxShadow = "0 0 20px rgba(233, 69, 96, 0.4)";
-        setTimeout(() => {
-            element.style.boxShadow = "var(--shadow)";
-        }, 2000);
+        setTimeout(() => { element.style.boxShadow = "var(--shadow)"; }, 2000);
     }
 }
 
