@@ -23,7 +23,15 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--surface2); color: var(--text); min-height: 100vh; }
 
-  #headerNav, #page-public, #page-admin { display: none !important; }
+/* Xóa !important để JavaScript có thể điều khiển hiển thị */
+#headerNav, .page { 
+    display: none; 
+}
+
+/* Chỉ giữ trang login hoặc trang public hiển thị mặc định tùy nhu cầu */
+#page-login.active, #page-public.active, #page-admin.active {
+    display: block;
+}
   
   /* HEADER */
   .site-header {
