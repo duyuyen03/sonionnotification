@@ -311,13 +311,19 @@ function renderPublic() {
     document.getElementById('publicSubtitle').textContent = state.notices.length + " thông báo";
     
     // Render Tin Ghim (Sidebar)
-    const pins = state.notices.filter(n => n.isPinned);
-    pinnedList.innerHTML = pins.length > 0 ? pins.slice().reverse().map(n => `
-        <div class="pinned-item">
-            <div class="pinned-link">${n.title}</div>
-            <div class="pinned-date">${n.date}</div>
-        </div>
-    `).join('') : '<p style="color:#999; font-size:13px">Không có tin ghim.</p>';
+    // Render Tin Ghim (Sidebar)
+const pins = state.notices.filter(n => n.isPinned);
+pinnedList.innerHTML = pins.length > 0 ? pins.slice().reverse().map(n => `
+    <div class="pinned-item">
+        <a href="#notice-${n.title.replace(/\s+/g, '-')}" 
+           class="pinned-link" 
+           style="text-decoration: none; transition: 0.3s;"
+           onclick="scrollToNotice(event, 'notice-${n.title.replace(/\s+/g, '-')}')">
+           ${n.title}
+        </a>
+        <div class="pinned-date">${n.date}</div>
+    </div>
+`).join('') : '<p style="color:#999; font-size:13px">Không có tin ghim.</p>';
 
     // Render Danh sách chính
     if (state.notices.length === 0) {
@@ -340,7 +346,7 @@ function renderPublic() {
         }
 
         return `
-            <div class="notice-card">
+            <div class="notice-card" id="notice-${n.title.replace(/\s+/g, '-')}">
                 <div class="notice-header">
                     <div class="notice-title">${n.title}</div>
                     ${n.isPinned ? '<span class="pin-badge">📌 QUAN TRỌNG</span>' : ''}
@@ -408,6 +414,19 @@ async function deleteNotice(index) {
     } catch(e) { alert("Lỗi xóa!"); }
 }
 
+function scrollToNotice(event, elementId) {
+    event.preventDefault(); // Ngăn chặn hành động mặc định của thẻ link
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Hiệu ứng nháy nhẹ để người dùng biết đã đến nơi
+        element.style.borderColor = 'var(--accent)';
+        setTimeout(() => {
+            element.style.borderColor = 'var(--border)';
+        }, 1500);
+    }
+}
 init();
 </script>
 </body>
