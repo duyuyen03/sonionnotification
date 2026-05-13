@@ -201,11 +201,27 @@ function init() {
 }
 
 function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // 1. Ẩn tất cả các trang và bỏ trạng thái active
+    document.querySelectorAll('.page').forEach(p => {
+        p.classList.remove('active');
+        p.style.display = 'none'; // Đảm bảo ẩn đi
+    });
+
+    // 2. Bỏ active ở các tab menu
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('page-' + pageId).classList.add('active');
+
+    // 3. Hiển thị trang được chọn
+    const targetPage = document.getElementById('page-' + pageId);
+    if (targetPage) {
+        targetPage.classList.add('active');
+        targetPage.style.display = 'block'; // Hiện trang lên
+    }
+
+    // 4. Active cái tab tương ứng trên menu
     const tab = document.getElementById('tab-' + pageId);
-    if(tab) tab.classList.add('active');
+    if (tab) tab.classList.add('active');
+
+    // 5. Chạy hàm vẽ dữ liệu
     if (pageId === 'public') renderPublic();
     if (pageId === 'admin') renderAdminNotices();
 }
