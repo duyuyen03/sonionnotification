@@ -80,6 +80,21 @@
     border-radius: 8px;
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }
+  /* Tìm class hoặc ID bao bọc danh sách tin ghim */
+#pinnedList {
+    max-height: calc(100vh - 150px); /* Giới hạn chiều cao theo màn hình */
+    overflow-y: auto; /* Hiện thanh cuộn khi nội dung quá dài */
+    padding-right: 5px; /* Tạo khoảng trống nhỏ cho thanh cuộn */
+}
+
+/* Tùy chỉnh thanh cuộn cho đẹp và gọn hơn (tùy chọn) */
+#pinnedList::-webkit-scrollbar {
+    width: 4px;
+}
+#pinnedList::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
   .preview-item {
     position: relative;
     display: inline-block;
