@@ -422,10 +422,28 @@ async function publishNotice() {
                     attachments: selectedFiles.map(f => ({ Name: f.Name, ContentBytes: f.ContentBytes }))
                 })
             });
-        }
-        alert("Đăng thành công!");
-        location.reload();
-    } catch(e) { alert("Lỗi gửi tin!"); btn.disabled = false; }
+        }alert("Đăng thành công!");
+
+        // 1. Cập nhật dữ liệu mới vào state để hiển thị ngay
+        state.notices.push(payload); 
+
+        // 2. Reset sạch form để lần sau đăng tiếp không bị dính dữ liệu cũ
+        document.getElementById('noticeTitle').value = "";
+        document.getElementById('noticeContent').value = "";
+        document.getElementById('isPinnedCheck').checked = false;
+        selectedFiles = []; 
+        document.getElementById('previewImgContainer').innerHTML = "";
+        document.getElementById('fileNameDisplay').textContent = "Chưa có tệp nào";
+
+        // 3. Cập nhật lại giao diện và chuyển về trang thông báo
+        renderPublic(); 
+        showPage('public'); 
+        
+        btn.disabled = false; // Mở lại nút đăng bài
+    } catch(e) { 
+        alert("Lỗi gửi tin!"); 
+        btn.disabled = false; 
+    }
 }
 
 function renderPublic() {
