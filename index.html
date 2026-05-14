@@ -324,9 +324,9 @@ async function doLogin() {
 
 async function handleFile(input) {
     const files = Array.from(input.files);
-    const container = document.getElementById('previewImgContainer');
-    container.innerHTML = "";
-    selectedFiles = await Promise.all(files.map(file => {
+    
+    // Đọc các file mới được chọn
+    const newFiles = await Promise.all(files.map(file => {
         return new Promise(resolve => {
             const reader = new FileReader();
             reader.onload = e => resolve({
@@ -338,16 +338,57 @@ async function handleFile(input) {
             reader.readAsDataURL(file);
         });
     }));
-    selectedFiles.forEach(f => {
+
+    // Cộng dồn vào danh sách đã chọn (để có thể chọn nhiều lần)
+    selectedFiles = [...selectedFiles, ...newFiles];
+    renderPreviews();
+    
+    // Reset input file để có thể chọn lại chính file đó nếu muốn
+    input.value = "";
+}
+
+function renderPreviews() {
+    const container = document.getElementById('previewImgContainer');
+    container.innerHTML = "";
+    
+    selectedFiles.forEach((f, index) => {
+        const item = document.createElement('div');
+        item.className = 'preview-item';
+        
+        // Nếu là ảnh thì hiện ảnh, nếu là file khác thì hiện icon
         if (f.type.startsWith('image/')) {
             const img = document.createElement('img');
             img.src = f.fullData;
-            img.className = 'preview-thumb';
-            img.style = "width:80px; height:80px; object-fit:cover; border-radius:6px; margin:5px;";
-            container.appendChild(img);
+            img.style = "width:80px; height:80px; object-fit:cover; border-radius:6px; border:1px solid #ddd;";
+            item.appendChild(img);
+        } else {
+            const doc = document.createElement('div');
+            doc.style = "width:80px; height:80px; display:flex; align-items:center; justify-content:center; background:#eee; border-radius:6px; font-size:10px; text-align:center; padding:5px;";
+            doc.innerText = f.Name;
+            item.appendChild(doc);
         }
+
+        // Tạo nút xóa
+        const delBtn = document.createElement('button');
+        delBtn.className = 'remove-btn';
+        delBtn.innerHTML = '×';
+        delBtn.onclick = (e) => {
+            e.preventDefault();
+            removeFile(index);
+        };
+        
+        item.appendChild(delBtn);
+        container.appendChild(item);
     });
-    document.getElementById('fileNameDisplay').textContent = `Đã chọn ${files.length} tệp`;
+
+    document.getElementById('fileNameDisplay').textContent = selectedFiles.length > 0 
+        ? `Đã chọn ${selectedFiles.length} tệp` 
+        : "Chưa có tệp nào";
+}
+
+function removeFile(index) {
+    selectedFiles.splice(index, 1); // Xóa file khỏi mảng dữ liệu
+    renderPreviews(); // Vẽ lại giao diện
 }
 
 async function publishNotice() {
