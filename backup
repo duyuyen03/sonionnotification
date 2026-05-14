@@ -23,26 +23,40 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Be Vietnam Pro', sans-serif; background: var(--surface2); color: var(--text); min-height: 100vh; }
 
-  #headerNav, #page-public, #page-admin { display: none !important; }
+/* Xóa !important để JavaScript có thể điều khiển hiển thị */
+#headerNav, .page { 
+    display: none; 
+}
+
+/* Chỉ giữ trang login hoặc trang public hiển thị mặc định tùy nhu cầu */
+#page-login.active, #page-public.active, #page-admin.active {
+    display: block;
+}
   
   /* HEADER */
-  .site-header {
-  background: var(--primary) !important;
-  color: #fff !important;
-  padding: 0 15px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  height: 64px !important;
-  width: 100% !important;
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 1000 !important;
+ .site-header {
+  background: var(--primary); /* Bỏ !important */
+  color: #fff;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
   .company-logo { height: 30px !important; width: auto !important; }
   .site-logo { display: flex !important; align-items: center !important; gap: 10px !important; flex: 1 !important; }
   .logo-text { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; white-space: nowrap; }
-  .header-nav { display: flex !important; gap: 8px !important; align-items: center !important; justify-content: flex-end !important; flex: 1 !important; }
+  .header-nav { 
+  display: flex;
+  gap: 8px; 
+  align-items: center; 
+  justify-content: flex-end; 
+  flex: 1; 
+}
 
   @media (max-width: 600px) {
     .logo-text { display: none !important; }
@@ -108,10 +122,10 @@
     <img src="https://raw.githubusercontent.com/duyuyen03/sonionnotification/main/Logo%20sonion.png" alt="Sonion" class="company-logo">
     <span class="logo-text">Thông Báo Nội Bộ</span>
   </div>
-  <div class="header-nav" id="headerNav">
-    <button class="nav-tab active" id="tab-public" onclick="showPage('public')">📢 Thông báo</button>
-    <button class="nav-tab accent-tab" id="tab-login" onclick="showPage('login')">🔐 Admin</button>
-  </div>
+<div class="header-nav" id="headerNav" style="display: none;">
+        <button class="nav-tab" id="tab-public" onclick="showPage('public')">📢 Thông báo</button>
+        <button class="nav-tab" id="tab-admin" onclick="showPage('admin')">⚙️ Quản lý</button>
+    </div>
 </header>
 
 <!-- TRANG CHỦ (PUBLIC) -->
@@ -182,27 +196,41 @@
 
 <script>
 const WEBHOOK_URL = 'https://defaultaf1f375339254e6f949b97c0073208.03.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/9f15bac38c2640b185716127e7c0ff44/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Bxa82ctx9WzqmiTinfUvl5OuwFHkDyX-LhfbnPq70bs';
-const DB_URL = 'https://script.google.com/macros/s/AKfycbwJar9SH9Kd4XC7AsgZQ5Z9hO9kW8PJ7DI4EH1CelU-b_h5QQrFLotaVn-5XhtRvMlHzA/exec'; 
+const DB_URL = 'https://script.google.com/macros/s/AKfycbyuYF9orcbFMlzVy0o-Td6IyEp-cXhK8WGikECjiCNXAfPBL5MuS1Ha3_dRVjdmdRMIGg/exec'; 
 
 let state = { notices: [], currentUser: "", currentTeam: "" };
 let selectedFiles = [];
 
-async function init() {
-    try {
-        const response = await fetch(DB_URL);
-        state.notices = await response.json();
-        renderPublic();
-    } catch(e) { 
-        document.getElementById('publicSubtitle').textContent = "Lỗi kết nối máy chủ.";
+
+function init() {
+    const nav = document.getElementById('headerNav');
+    if (nav) {
+        nav.style.setProperty('display', 'none', 'important');
     }
+    showPage('login'); 
 }
 
 function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // 1. Ẩn tất cả các trang bằng cách ép kiểu display
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(p => {
+        p.style.setProperty('display', 'none', 'important');
+        p.classList.remove('active');
+    });
+
+    // 2. Hiện trang được chọn
+    const targetPage = document.getElementById('page-' + pageId);
+    if (targetPage) {
+        targetPage.style.setProperty('display', 'block', 'important');
+        targetPage.classList.add('active');
+    }
+
+    // 3. Cập nhật trạng thái nút bấm (Tab)
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('page-' + pageId).classList.add('active');
-    const tab = document.getElementById('tab-' + pageId);
-    if(tab) tab.classList.add('active');
+    const activeTab = document.getElementById('tab-' + pageId);
+    if (activeTab) activeTab.classList.add('active');
+
+    // 4. Load dữ liệu tương ứng
     if (pageId === 'public') renderPublic();
     if (pageId === 'admin') renderAdminNotices();
 }
@@ -211,6 +239,9 @@ async function doLogin() {
     const u = document.getElementById('loginUser').value;
     const p = document.getElementById('loginPass').value;
     const err = document.getElementById('loginErr');
+    const nav = document.getElementById('headerNav'); // Lấy thanh menu
+    
+    if(!u || !p) return alert("Vui lòng nhập tài khoản và mật khẩu!");
 
     try {
         const response = await fetch(DB_URL, {
@@ -219,39 +250,52 @@ async function doLogin() {
         });
         const result = await response.json();
 
-        if (result.success) {
-    err.style.display = 'none';
-    state.currentUser = u;
-    state.currentTeam = result.team; // Lưu tên team: ADMIN, HRSERVICE, v.v.
+        if (result.auth && result.auth.success) {
+            state.currentUser = u;
+            state.currentTeam = result.auth.team; 
+            state.notices = result.notices || [];
 
-    // 1. Cập nhật nút trên thanh điều hướng
-    const adminBtn = document.getElementById('tab-login');
-    adminBtn.innerHTML = "⚙️ Quản lý";
-    adminBtn.onclick = () => showPage('admin');
-
-    // 2. PHÂN QUYỀN HIỂN THỊ: Kiểm tra checkbox ghim
-    const pinOption = document.getElementById('pinOption'); 
-    if (pinOption) {
-        if (state.currentTeam === "ADMIN") {
-            pinOption.style.display = 'flex'; // Hiện cho ADMIN
-        } else {
-            pinOption.style.display = 'none'; // Ẩn cho các team khác
-        }
+            // 1. CHỈ HIỂN THỊ MENU KHI ĐĂNG NHẬP THÀNH CÔNG
+            if (nav) {
+        nav.style.setProperty('display', 'flex', 'important');
     }
-            if (!document.getElementById('logoutBtn')) {
-                const logoutBtn = document.createElement('button');
-                logoutBtn.className = 'logout-btn';
-                logoutBtn.id = 'logoutBtn';
-                logoutBtn.textContent = 'Thoát';
-                logoutBtn.onclick = () => location.reload();
-                document.getElementById('headerNav').appendChild(logoutBtn);
+            
+            const adminTab = document.getElementById('tab-admin');
+            const pinOption = document.getElementById('pinOption');
+
+            // 2. PHÂN QUYỀN GIAO DIỆN QUẢN LÝ
+            if (state.currentTeam === "ADMIN") {
+                if (adminTab) {
+                    adminTab.style.display = 'block';
+                    adminTab.innerHTML = "⚙️ Quản lý";
+                }
+                if (pinOption) pinOption.style.display = 'flex'; // Admin được ghim tin
+            } 
+            else if (state.currentTeam === "MEMBER") {
+                if (adminTab) {
+                    adminTab.style.display = 'block';
+                    adminTab.innerHTML = "⚙️ Quản lý";
+                }
+                if (pinOption) pinOption.style.display = 'none'; // Member không được ghim tin
+            } 
+            else {
+                // User thường không thấy nút Quản lý
+                if (adminTab) adminTab.style.display = 'none';
             }
-            showPage('admin');
-            alert("Xin chào " + result.team);
+
+            // 3. CHUYỂN VÀO TRANG NỘI DUNG
+            renderPublic(); 
+            showPage('public'); 
+            
+            // Xóa thông báo lỗi nếu có
+            if (err) err.style.display = 'none';
         } else {
-            err.style.display = 'block';
+            if (err) err.style.display = 'block';
         }
-    } catch(e) { alert("Lỗi đăng nhập!"); }
+    } catch(e) {
+        alert("Lỗi kết nối hệ thống! Hãy kiểm tra lại URL AppScript.");
+        console.error(e);
+    }
 }
 
 async function handleFile(input) {
