@@ -197,7 +197,8 @@ let selectedFiles = [];
 
 
 function init() {
-    showPage('login'); // Ép buộc vào trang đăng nhập đầu tiên
+    document.getElementById('headerNav').style.display = 'none';
+    showPage('login'); 
 }
 
 function showPage(pageId) {
