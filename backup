@@ -63,6 +63,23 @@
     .nav-tab { padding: 6px 10px !important; font-size: 12px !important; }
   }
 
+  /* Lớp phủ ảnh phóng to */
+#imageOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    cursor: zoom-out;
+}
+#imageOverlay img {
+    max-width: 95%;
+    max-height: 95%;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
   .preview-item {
     position: relative;
     display: inline-block;
@@ -140,7 +157,10 @@
 </style>
 </head>
 <body>
-
+<div id="imageOverlay" onclick="this.style.display='none'">
+    <img id="fullImage" src="">
+</div>
+  
 <header class="site-header">
   <div class="site-logo">
     <img src="https://raw.githubusercontent.com/duyuyen03/sonionnotification/main/Logo%20sonion.png" alt="Sonion" class="company-logo">
@@ -501,8 +521,13 @@ pinnedList.innerHTML = pins.length > 0 ? pins.slice().reverse().map(n => `
 }
 
 function openFullImage(base64Data) {
-    const win = window.open();
-    win.document.write(`<body style="margin:0; background:#111; display:flex; align-items:center; justify-content:center;"><img src="${base64Data}" style="max-width:100%; max-height:100vh; cursor:zoom-out" onclick="window.close()"></body>`);
+    const overlay = document.getElementById('imageOverlay');
+    const fullImg = document.getElementById('fullImage');
+    
+    if (overlay && fullImg) {
+        fullImg.src = base64Data;
+        overlay.style.display = 'flex';
+    }
 }
 
 function renderAdminNotices() {
