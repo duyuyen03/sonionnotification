@@ -230,6 +230,7 @@ async function doLogin() {
     const u = document.getElementById('loginUser').value;
     const p = document.getElementById('loginPass').value;
     const err = document.getElementById('loginErr');
+    const nav = document.getElementById('headerNav'); // Lấy thanh menu
     
     if(!u || !p) return alert("Vui lòng nhập tài khoản và mật khẩu!");
 
@@ -243,36 +244,45 @@ async function doLogin() {
         if (result.auth && result.auth.success) {
             state.currentUser = u;
             state.currentTeam = result.auth.team; 
-            state.notices = result.notices;
+            state.notices = result.notices || [];
 
-            // Hiển thị menu điều hướng
-            document.getElementById('headerNav').style.display = 'flex';
+            // 1. CHỈ HIỂN THỊ MENU KHI ĐĂNG NHẬP THÀNH CÔNG
+            if (nav) nav.style.display = 'flex';
             
             const adminTab = document.getElementById('tab-admin');
             const pinOption = document.getElementById('pinOption');
 
-            // PHÂN QUYỀN HIỂN THỊ
+            // 2. PHÂN QUYỀN GIAO DIỆN QUẢN LÝ
             if (state.currentTeam === "ADMIN") {
-                adminTab.style.display = 'block';
-                adminTab.innerHTML = "⚙️ Quản lý";
-                if (pinOption) pinOption.style.display = 'flex';
+                if (adminTab) {
+                    adminTab.style.display = 'block';
+                    adminTab.innerHTML = "⚙️ Quản lý";
+                }
+                if (pinOption) pinOption.style.display = 'flex'; // Admin được ghim tin
             } 
             else if (state.currentTeam === "MEMBER") {
-                adminTab.style.display = 'block';
-                adminTab.innerHTML = "⚙️ Quản lý";
-                if (pinOption) pinOption.style.display = 'none';
+                if (adminTab) {
+                    adminTab.style.display = 'block';
+                    adminTab.innerHTML = "⚙️ Quản lý";
+                }
+                if (pinOption) pinOption.style.display = 'none'; // Member không được ghim tin
             } 
             else {
-                adminTab.style.display = 'none';
+                // User thường không thấy nút Quản lý
+                if (adminTab) adminTab.style.display = 'none';
             }
 
+            // 3. CHUYỂN VÀO TRANG NỘI DUNG
             renderPublic(); 
             showPage('public'); 
+            
+            // Xóa thông báo lỗi nếu có
+            if (err) err.style.display = 'none';
         } else {
-            err.style.display = 'block';
+            if (err) err.style.display = 'block';
         }
     } catch(e) {
-        alert("Lỗi kết nối hệ thống!");
+        alert("Lỗi kết nối hệ thống! Hãy kiểm tra lại URL AppScript.");
         console.error(e);
     }
 }
