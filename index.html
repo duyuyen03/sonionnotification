@@ -203,7 +203,10 @@ let selectedFiles = [];
 
 
 function init() {
-    document.getElementById('headerNav').style.display = 'none';
+    const nav = document.getElementById('headerNav');
+    if (nav) {
+        nav.style.setProperty('display', 'none', 'important');
+    }
     showPage('login'); 
 }
 
