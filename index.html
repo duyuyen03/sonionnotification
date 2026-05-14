@@ -256,7 +256,9 @@ async function doLogin() {
             state.notices = result.notices || [];
 
             // 1. CHỈ HIỂN THỊ MENU KHI ĐĂNG NHẬP THÀNH CÔNG
-            if (nav) nav.style.display = 'flex';
+            if (nav) {
+        nav.style.setProperty('display', 'flex', 'important');
+    }
             
             const adminTab = document.getElementById('tab-admin');
             const pinOption = document.getElementById('pinOption');
