@@ -63,6 +63,23 @@
     .nav-tab { padding: 6px 10px !important; font-size: 12px !important; }
   }
 
+  /* Lớp phủ ảnh phóng to */
+#imageOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    cursor: zoom-out;
+}
+#imageOverlay img {
+    max-width: 95%;
+    max-height: 95%;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
   .preview-item {
     position: relative;
     display: inline-block;
