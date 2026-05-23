@@ -215,11 +215,11 @@
     <input type="text" id="loginUser">
     <label>Password</label>
     <input type="password" id="loginPass">
+    <p id="loginNote" style="color:var(--accent); font-size:13px; margin-bottom:10px; display:none; font-weight:600;">
+       ⏳ Vui lòng chờ trong giây lát...
+    </p>
     <p id="loginErr" style="color:var(--danger); font-size:13px; margin-bottom:10px; display:none">❌ Sai tài khoản hoặc mật khẩu</p>
- <div id="loginNote" style="display: none; color: #e67e22; font-size: 13px; margin-bottom: 10px; font-style: italic;">
-    ⚠️ Vui lòng chờ trong giây lát...
-</div>   
-<button class="send-btn" onclick="doLogin()">Login</button>
+    <button class="send-btn" onclick="doLogin()">Login</button>
   </div>
 </div>
 
@@ -304,17 +304,17 @@ async function doLogin() {
     const err = document.getElementById('loginErr');
     const nav = document.getElementById('headerNav');
     
-    // Thêm: Lấy thẻ ghi chú và nút bấm
+    // Lấy thêm 2 phần tử này
     const note = document.getElementById('loginNote');
-    const btn = document.querySelector('.send-btn'); 
+    const btn = document.getElementById('loginBtn'); 
     
     if(!u || !p) return alert("Vui lòng nhập tài khoản và mật khẩu!");
 
-    // --- BẮT ĐẦU QUÁ TRÌNH KIỂM TRA ---
-    if (note) note.style.display = 'block'; // Hiển thị dòng ghi chú
-    if (err) err.style.display = 'none';    // Ẩn thông báo lỗi cũ (nếu có)
+    // --- BẮT ĐẦU XỬ LÝ ---
+    if (note) note.style.display = 'block'; // Hiện "Vui lòng chờ"
+    if (err) err.style.display = 'none';    // Ẩn lỗi cũ
     if (btn) {
-        btn.disabled = true;                // Khóa nút để tránh bấm nhiều lần
+        btn.disabled = true;                // Khóa nút
         btn.innerText = "Đang kiểm tra..."; // Đổi chữ trên nút
     }
 
@@ -330,54 +330,36 @@ async function doLogin() {
             state.currentTeam = result.auth.team; 
             state.notices = result.notices || [];
 
-            // 1. CHỈ HIỂN THỊ MENU KHI ĐĂNG NHẬP THÀNH CÔNG
             if (nav) {
                 nav.style.setProperty('display', 'flex', 'important');
             }
             
+            // Phân quyền (giữ nguyên logic cũ của bạn...)
             const adminTab = document.getElementById('tab-admin');
             const pinOption = document.getElementById('pinOption');
-
-            // 2. PHÂN QUYỀN GIAO DIỆN QUẢN LÝ
             if (state.currentTeam === "ADMIN") {
-                if (adminTab) {
-                    adminTab.style.display = 'block';
-                    adminTab.innerHTML = "⚙️ Quản lý";
-                }
+                if (adminTab) { adminTab.style.display = 'block'; adminTab.innerHTML = "⚙️ Quản lý"; }
                 if (pinOption) pinOption.style.display = 'flex';
-            } 
-            else if (state.currentTeam === "MEMBER") {
-                if (adminTab) {
-                    adminTab.style.display = 'block';
-                    adminTab.innerHTML = "⚙️ Quản lý";
-                }
+            } else if (state.currentTeam === "MEMBER") {
+                if (adminTab) { adminTab.style.display = 'block'; adminTab.innerHTML = "⚙️ Quản lý"; }
                 if (pinOption) pinOption.style.display = 'none';
-            } 
-            else {
+            } else {
                 if (adminTab) adminTab.style.display = 'none';
             }
 
-            // Ẩn note trước khi chuyển trang
-            if (note) note.style.display = 'none';
-
-            // 3. CHUYỂN VÀO TRANG NỘI DUNG
             renderPublic(); 
             showPage('public'); 
             
         } else {
-            // Sai mật khẩu/tài khoản
-            if (err) {
-                err.style.display = 'block';
-                err.innerText = "Sai tài khoản hoặc mật khẩu!";
-            }
-            if (note) note.style.display = 'none'; // Ẩn dòng chờ
+            if (err) err.style.display = 'block';
         }
     } catch(e) {
-        alert("Lỗi kết nối hệ thống! Hãy kiểm tra lại URL AppScript.");
-        if (note) note.style.display = 'none';
+        alert("Lỗi kết nối hệ thống!");
         console.error(e);
     } finally {
-        // --- KẾT THÚC: TRẢ NÚT BẤM VỀ TRẠNG THÁI CŨ ---
+        // --- KẾT THÚC ---
+        // Ẩn dòng ghi chú và mở lại nút dù thành công hay thất bại
+        if (note) note.style.display = 'none';
         if (btn) {
             btn.disabled = false;
             btn.innerText = "Login";
