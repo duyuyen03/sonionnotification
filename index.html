@@ -209,18 +209,43 @@
 
 <!-- TRANG LOGIN -->
 <div class="page" id="page-login">
-  <div class="panel" style="max-width: 400px; margin: 40px auto;">
-    <h2 style="margin-bottom:20px">Administrator</h2>
-    <label>User</label>
-    <input type="text" id="loginUser">
-    <label>Password</label>
-    <input type="password" id="loginPass">
-    <p id="loginNote" style="color:var(--accent); font-size:13px; margin-bottom:10px; display:none; font-weight:600;">
-       ⏳ Vui lòng chờ trong giây lát...
-    </p>
-    <p id="loginErr" style="color:var(--danger); font-size:13px; margin-bottom:10px; display:none">❌ Sai tài khoản hoặc mật khẩu</p>
-    <button class="send-btn" onclick="doLogin()">Login</button>
-  </div>
+    <div class="panel" style="max-width: 400px; margin: 40px auto;">
+        <h2 style="margin-bottom: 20px;">Administrator</h2>
+        
+        <label>User</label>
+        <input type="text" id="loginUser" style="width: 100%; margin-bottom: 15px;">
+        
+        <label>Password</label>
+        <div style="position: relative; width: 100%; margin-bottom: 10px;">
+            <input type="password" id="loginPass" placeholder="Nhập mã căn tin..." style="width: 100%; padding-right: 40px; margin-bottom: 0;">
+            <button type="button" id="togglePassword" style="
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                height: 100%;
+            ">
+                <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#888880" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+            </button>
+        </div>
+
+        <p id="loginNote" style="color:var(--accent); font-size:13px; margin-bottom:10px; display:none; font-weight:600;">
+            ⏳ Vui lòng chờ trong giây lát...
+        </p>
+        <p id="loginErr" style="color:var(--danger); font-size:13px; margin-bottom:10px; display:none;">
+            ❌ Sai tài khoản hoặc mật khẩu
+        </p>
+        <button class="send-btn" onclick="doLogin()">Login</button>
+    </div>
 </div>
 
 <!-- TRANG QUẢN LÝ -->
