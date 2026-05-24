@@ -210,10 +210,10 @@
 <!-- TRANG LOGIN -->
 <div class="page" id="page-login">
     <div class="panel" style="max-width: 400px; margin: 40px auto;">
-        <h2 style="margin-bottom: 20px;">Administrator</h2>
+        <h2 style="margin-bottom: 20px;">Sign in</h2>
         
         <label>User</label>
-        <input type="text" id="loginUser" style="width: 100%; margin-bottom: 15px;">
+        <input type="text" id="loginUser" placeholder="Nhập mã nhân viên..." style="width: 100%; margin-bottom: 15px;">
         
         <label>Password</label>
         <div style="position: relative; width: 100%; margin-bottom: 10px;">
@@ -251,17 +251,17 @@
 <!-- TRANG QUẢN LÝ -->
 <div class="page" id="page-admin">
   <div class="main-container" style="max-width: 960px; flex-direction: column;">
-    <h1 class="page-title">Bảng điều khiển</h1>
+    <h1 class="page-title">Bảng thông báo</h1>
     <div class="panel">
-      <label>Tiêu đề thông báo</label>
-      <input type="text" id="noticeTitle" placeholder="VD: Thông báo lịch trực tết...">
-      <label>Nội dung</label>
+      <label>Tiêu đề thông báo *</label>
+      <input type="text" id="noticeTitle" >
+      <label>Nội dung *</label>
       <textarea id="noticeContent" style="min-height:120px; width:100%; border-radius:8px; border:1px solid var(--border); padding:10px;" placeholder="Nhập nội dung..."></textarea>
       
       <!-- Checkbox Ghim -->
 <div id="pinOption" style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
     <input type="checkbox" id="isPinnedCheck" style="width: 18px; height: 18px; cursor: pointer;">
-    <label for="isPinnedCheck" style="margin-bottom: 0; cursor: pointer; color: var(--accent);">Ghim thông báo này vào thanh bên</label>
+    <label for="isPinnedCheck" style="margin-bottom: 0; cursor: pointer; color: var(--accent);">Ghim thông báo nàyn</label>
 </div>
 
       <label>Đính kèm tài liệu</label>
@@ -272,7 +272,7 @@
     <!-- Nơi hiển thị ảnh và nút xóa -->
     <div id="previewImgContainer" style="margin-top: 10px; display: flex; flex-wrap: wrap; justify-content: center;"></div>
 </div>
-      <button class="send-btn" id="sendBtn" onclick="publishNotice()">Đăng & Gửi Power Automate</button>
+      <button class="send-btn" id="sendBtn" onclick="publishNotice()">Đăng bài</button>
     </div>
     
     <div class="panel">
