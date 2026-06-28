@@ -502,12 +502,13 @@ async function publishNotice() {
     
     btn.disabled = true;
     const payload = {
-        title: title,
-        content: `[Team: ${state.currentTeam}] \n` + content,
-        date: new Date().toLocaleString('vi-VN'),
-        files: selectedFiles.map(f => ({ name: f.Name, data: f.fullData })),
-        isPinned: isPinned // Gửi trạng thái ghim lên Server
-    };
+    action: "publish", // Định nghĩa rõ hành động gửi tin lên Apps Script
+    title: title,
+    content: `[Team: ${state.currentTeam}] \n` + content,
+    date: new Date().toLocaleString('vi-VN'),
+    files: selectedFiles.map(f => ({ name: f.Name, data: f.fullData })),
+    isPinned: isPinned 
+};
 
     try {
         await fetch(DB_URL, { method: 'POST', body: JSON.stringify(payload) });
