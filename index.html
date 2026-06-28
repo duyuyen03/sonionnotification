@@ -374,13 +374,16 @@ async function doLogin() {
         btn.innerText = "Đang kiểm tra..."; // Đổi chữ trên nút
     }
 
-    try {
-        const response = await fetch(DB_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: "check_login", username: u, password: p })
-        });
-        const result = await response.json();
-
+    // Tìm đoạn này trong hàm doLogin() của file HTML và thay thế:
+try {
+    const response = await fetch(DB_URL, {
+        method: 'POST',
+        // Không set Headers Content-Type: application/json ở đây vì nó có thể kích hoạt lỗi CORS Preflight trên Google Domain
+        body: JSON.stringify({ action: "check_login", username: u, password: p })
+    });
+    
+    const result = await response.json();
+    // ... Giữ nguyên toàn bộ logic xử lý phân quyền bên dưới của bạn ...
         if (result.auth && result.auth.success) {
             state.currentUser = u;
             state.currentTeam = result.auth.team; 
